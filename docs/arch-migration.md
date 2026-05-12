@@ -45,10 +45,11 @@ Each stage should leave the tools working and tested.
 
 ## Stage 4: Create Unified CLI
 
-- [ ] Add a new root package under `src/docflow`.
-- [ ] Add the `docflow` executable.
-- [ ] Add `pdf`, `image`, and `ocr` subcommand groups.
-- [ ] Route `docflow pdf reverse|join|split` to the PDF domain service.
+- [x] Add a new root package under `src/docflow`.
+- [x] Add the `docflow` executable.
+- [x] Add the `pdf` subcommand group.
+- [ ] Add the `image` and `ocr` subcommand groups.
+- [x] Route `docflow pdf reverse|join|split` to the PDF domain service.
 - [ ] Route `docflow image to-pdf` to the image-to-PDF domain service.
 - [ ] Route `docflow ocr run|extract` to the OCR domain service.
 - [ ] Add top-level help text that makes command choice obvious.
