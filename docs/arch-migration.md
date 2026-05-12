@@ -68,11 +68,11 @@ Each stage should leave the tools working and tested.
 
 ## Stage 6: Release Preparation
 
-- [ ] Decide package and executable names before publishing.
+- [x] Decide package and executable names before publishing.
 - [ ] Add license metadata.
-- [ ] Add project URLs and supported Python versions.
-- [ ] Add a release README focused on installation and usage.
-- [ ] Document external OCR requirements and standalone-binary behavior.
+- [x] Add project URLs and supported Python versions.
+- [x] Add a release README focused on installation and usage.
+- [x] Document external OCR requirements and standalone-binary behavior.
 - [ ] Build a wheel from a clean checkout.
 - [ ] Install the wheel in a fresh environment and smoke-test each command.
 - [ ] Run a final secrets scan.

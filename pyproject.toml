@@ -2,7 +2,27 @@
 name = "docflow"
 version = "0.1.0"
 description = "Small command-line utilities for document workflows"
+readme = "README.md"
 requires-python = ">=3.10"
+keywords = [
+    "documents",
+    "jpeg",
+    "ocr",
+    "pdf",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business",
+    "Topic :: Utilities",
+]
 dependencies = []
 
 [project.scripts]
@@ -33,6 +53,11 @@ dev = [
     "pytest>=8.0",
     "ruff>=0.8",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ocasta181/docflow"
+Issues = "https://github.com/ocasta181/docflow/issues"
+Repository = "https://github.com/ocasta181/docflow"
 
 [build-system]
 requires = ["hatchling"]

@@ -2,54 +2,98 @@
 
 Small command-line utilities for document workflows.
 
-`docflow` is the working name for this toolkit. The current code still ships as
-one unified command with legacy aliases for the original tool names.
+`docflow` is the package name and primary executable. The legacy command names
+`pdftools`, `jpg2pdf`, and `batch-ocr` are still available as compatibility
+aliases while the project finishes migration.
 
-## Use The Right Tool
+## Requirements
 
-Run these tools with `uv`, not `python` directly.
+- Python 3.10 or newer
+- Tesseract on `PATH` for OCR commands
+- The `all` extra for the complete toolset
 
-- For PDF page order changes or PDF merging, use `uv run docflow pdf ...`
-- For JPEG-to-PDF conversion, use `uv run docflow image to-pdf ...`
-- For OCR on existing PDFs, use `uv run docflow ocr ...`
-- The legacy aliases `pdftools`, `jpg2pdf`, and `batch-ocr` still work during
-  migration.
+Feature extras are split by domain:
 
-## Included tools
+- `pdf`: PDF page operations
+- `image`: JPEG-to-PDF conversion
+- `ocr`: OCR and text extraction
+- `all`: every runtime feature
+- `dev`: local testing, linting, formatting, and release tooling
 
-### `pdftools`
+## Install
 
-PDF page operations:
-- reverse page order
-- join multiple PDFs
-- split one PDF into multiple parts
-
-Run with `uv run docflow pdf ...`.
-
-See `pdftools/README.md` for commands and examples.
-
-### `jpg2pdf`
-
-Combine sequentially numbered JPEG files into PDFs, grouped by filename prefix.
-
-Run with `uv run docflow image to-pdf ...`.
-
-See `jpeg2pdf/README.md` for usage.
-
-### `batch-ocr`
-
-Recursively OCR PDF files in directories.
-
-Run with `uv run docflow ocr ...`.
-
-See `batch-ocr/README.md` for usage.
-
-## Reverse And Combine PDFs
-
-Use `docflow pdf`, not `docflow image` or `docflow ocr`.
+From a source checkout:
 
 ```bash
-uv run docflow pdf reverse file1.pdf
-uv run docflow pdf reverse file2.pdf
-uv run docflow pdf join combined.pdf file1_reversed.pdf file2_reversed.pdf
+uv sync --extra all --extra dev
+uv run docflow --help
+```
+
+After package publication:
+
+```bash
+uv tool install "docflow[all]"
+docflow --help
+```
+
+## Commands
+
+Use `docflow pdf` for PDF page operations:
+
+```bash
+uv run docflow pdf reverse input.pdf
+uv run docflow pdf join combined.pdf first.pdf second.pdf
+uv run docflow pdf split input.pdf --parts 3
+```
+
+Use `docflow image to-pdf` to combine sequentially numbered JPEG files into
+PDFs grouped by filename prefix:
+
+```bash
+uv run docflow image to-pdf ./scans --output ./pdfs
+uv run docflow image to-pdf ./scans --prefix invoice
+```
+
+Use `docflow ocr` for OCR and text extraction:
+
+```bash
+uv run docflow ocr run ./pdfs
+uv run docflow ocr extract ./pdfs
+uv run docflow ocr run ./document.pdf --force
+```
+
+## Legacy Aliases
+
+The original executable names route to the unified command:
+
+```bash
+uv run pdftools reverse input.pdf
+uv run jpg2pdf ./scans --output ./pdfs
+uv run batch-ocr ./pdfs --extract
+```
+
+New scripts should prefer `docflow`.
+
+## OCR Runtime
+
+OCR uses PyMuPDF for PDF inspection/manipulation and shells out to the
+`tesseract` executable to create page-level OCR output. In normal Python
+installs, `tesseract` must be installed separately and available on `PATH`.
+
+When running from a frozen standalone binary, the runtime first looks for a
+bundled `tesseract` executable and `tessdata` directory beside the extracted
+application bundle. If those are not bundled, the standalone build must document
+that it still expects system Tesseract.
+
+`just build` currently builds the Python source distribution and wheel. Any
+standalone executable build should be treated as a release artifact generated
+from a clean checkout, not as checked-in source.
+
+## Development
+
+```bash
+just setup
+just lint
+just test-all
+just build
 ```
