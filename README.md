@@ -1,6 +1,9 @@
-# utils
+# docflow
 
 Small command-line utilities for document workflows.
+
+`docflow` is the working name for this toolkit. The current code still ships as
+separate tools while the repository migrates toward one unified command.
 
 ## Use The Right Tool
 
@@ -20,7 +23,7 @@ PDF page operations:
 - join multiple PDFs
 - split one PDF into multiple parts
 
-Run from `/Users/ocasta/Code/utils/pdftools` with `uv run pdftools ...`.
+Run from `pdftools/` with `uv run pdftools ...`.
 
 See `pdftools/README.md` for commands and examples.
 
@@ -28,7 +31,7 @@ See `pdftools/README.md` for commands and examples.
 
 Combine sequentially numbered JPEG files into PDFs, grouped by filename prefix.
 
-Run from `/Users/ocasta/Code/utils/jpeg2pdf` with `uv run jpg2pdf ...`.
+Run from `jpeg2pdf/` with `uv run jpg2pdf ...`.
 
 See `jpeg2pdf/README.md` for usage.
 
@@ -36,7 +39,7 @@ See `jpeg2pdf/README.md` for usage.
 
 Recursively OCR PDF files in directories.
 
-Run from `/Users/ocasta/Code/utils/batch-ocr` with `uv run batch-ocr ...`.
+Run from `batch-ocr/` with `uv run batch-ocr ...`.
 
 See `batch-ocr/README.md` for usage.
 

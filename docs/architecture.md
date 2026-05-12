@@ -1,6 +1,6 @@
 # Architecture
 
-This project should be a small document-workflow toolkit with one user-facing
+`docflow` should be a small document-workflow toolkit with one user-facing
 CLI and separate domain modules underneath it. The CLI should make common
 workflows easy to discover without forcing unrelated capabilities into the same
 implementation module.
@@ -19,31 +19,31 @@ implementation module.
 The project should ship a single primary executable:
 
 ```bash
-doc-tools <domain> <command> [options]
+docflow <domain> <command> [options]
 ```
 
 The top-level command should route to domain-specific subcommands:
 
 ```bash
-doc-tools pdf reverse input.pdf
-doc-tools pdf join output.pdf first.pdf second.pdf
-doc-tools pdf split input.pdf --parts 3
+docflow pdf reverse input.pdf
+docflow pdf join output.pdf first.pdf second.pdf
+docflow pdf split input.pdf --parts 3
 
-doc-tools image to-pdf /path/to/scans --prefix tax_return
+docflow image to-pdf /path/to/scans --prefix tax_return
 
-doc-tools ocr run /path/to/file-or-folder
-doc-tools ocr extract /path/to/file-or-folder
+docflow ocr run /path/to/file-or-folder
+docflow ocr extract /path/to/file-or-folder
 ```
 
 Legacy executables may exist as thin compatibility wrappers during migration,
-but the durable interface should be the single `doc-tools` command.
+but the durable interface should be the single `docflow` command.
 
 ## Domains
 
 The code should be organized by domain:
 
 ```text
-src/doc_tools/
+src/docflow/
   cli/
     app.py
     errors.py
