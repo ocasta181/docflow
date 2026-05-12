@@ -14,7 +14,10 @@ from docflow.domains.ocr.tesseract import (
     get_tesseract_env,
     tesseract_unavailable_message,
 )
-from docflow.shared import ensure_directory, find_files
+from docflow.shared import ensure_directory, ensure_output_not_inputs, find_files, require_extension
+
+
+PDF_EXTENSIONS = {".pdf"}
 
 
 def has_text(pdf_path: Path | str, min_chars: int = 100) -> bool:
@@ -47,6 +50,13 @@ def ocr_pdf(
     if input_path.suffix.lower() != ".pdf":
         return OcrResult(input_path, success=False, skipped=False, message="Not a PDF file")
 
+    target_output_path: Path | None = None
+    if output_path is not None:
+        try:
+            target_output_path = _validate_output_path(input_path, output_path)
+        except ValueError as e:
+            return OcrResult(input_path, success=False, skipped=False, message=str(e))
+
     if skip_if_text and has_text(input_path):
         return OcrResult(input_path, success=True, skipped=True, message="Already has text")
 
@@ -59,7 +69,8 @@ def ocr_pdf(
     try:
         with tempfile.TemporaryDirectory() as temp_dir_name:
             temp_dir = Path(temp_dir_name)
-            target_path = output_path or temp_dir / "output.pdf"
+            target_path = target_output_path or temp_dir / "output.pdf"
+            target_path.parent.mkdir(parents=True, exist_ok=True)
             doc = fitz.open(input_path)
 
             try:
@@ -185,6 +196,13 @@ def extract_text(
 def find_pdfs(directory: Path | str, recursive: bool = True) -> list[Path]:
     """Find PDF files in a directory."""
     return find_files(directory, {".pdf"}, recursive=recursive)
+
+
+def _validate_output_path(input_path: Path, output_path: Path | str) -> Path:
+    target_path = Path(output_path)
+    require_extension(target_path, PDF_EXTENSIONS, "Output")
+    ensure_output_not_inputs(target_path, [input_path])
+    return target_path
 
 
 def ocr_directory(

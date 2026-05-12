@@ -58,6 +58,8 @@ Use `docflow ocr` for OCR and text extraction:
 
 ```bash
 uv run docflow ocr run ./pdfs
+uv run docflow ocr run ./pdfs --output-dir ./ocr-pdfs
+uv run docflow ocr run ./document.pdf --output ./document_ocr.pdf
 uv run docflow ocr extract ./pdfs
 uv run docflow ocr run ./document.pdf --force
 ```

@@ -113,6 +113,26 @@ def test_ocr_pdf_rejects_non_pdf_file(tmp_path: Path) -> None:
     assert result.message == "Not a PDF file"
 
 
+def test_ocr_pdf_rejects_output_matching_input(tmp_path: Path) -> None:
+    pdf_path = create_text_pdf(tmp_path / "text.pdf")
+
+    result = ocr_pdf(pdf_path, output_path=pdf_path)
+
+    assert not result.success
+    assert not result.skipped
+    assert "different from input" in result.message
+
+
+def test_ocr_pdf_rejects_non_pdf_output_path(tmp_path: Path) -> None:
+    pdf_path = create_text_pdf(tmp_path / "text.pdf")
+
+    result = ocr_pdf(pdf_path, output_path=tmp_path / "ocr.txt")
+
+    assert not result.success
+    assert not result.skipped
+    assert "Output must have extension: .pdf" in result.message
+
+
 @pytest.mark.skipif(shutil.which("tesseract") is None, reason="Tesseract is not installed")
 def test_ocr_pdf_can_write_custom_output_for_scanned_pdf(tmp_path: Path) -> None:
     pdf_path = create_image_pdf(tmp_path / "scan.pdf")

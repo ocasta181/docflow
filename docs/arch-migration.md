@@ -94,7 +94,7 @@ Each stage should leave the tools working and tested.
       optional dependencies.
 - [x] Add a clear Tesseract preflight error for OCR work that actually needs
       OCR.
-- [ ] Make destructive OCR writes explicit, or add non-destructive output
+- [x] Make destructive OCR writes explicit, or add non-destructive output
       options.
 - [ ] Narrow broad exception handling where errors are currently swallowed or
       flattened.
