@@ -6,7 +6,10 @@ requires-python = ">=3.10"
 dependencies = []
 
 [project.scripts]
+batch-ocr = "docflow.legacy.batch_ocr:main"
 docflow = "docflow.cli.app:main"
+jpg2pdf = "docflow.legacy.jpg2pdf:main"
+pdftools = "docflow.legacy.pdftools:main"
 
 [project.optional-dependencies]
 pdf = [
@@ -27,6 +30,7 @@ all = [
 ]
 dev = [
     "pytest>=8.0",
+    "ruff>=0.8",
 ]
 
 [build-system]
@@ -35,3 +39,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/docflow"]
+
+[tool.ruff]
+line-length = 100

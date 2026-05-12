@@ -67,9 +67,7 @@ def find_files(
     normalized = {_normalize_extension(extension) for extension in extensions}
     pattern = "**/*" if recursive else "*"
     return sorted(
-        path
-        for path in root.glob(pattern)
-        if path.is_file() and path.suffix.lower() in normalized
+        path for path in root.glob(pattern) if path.is_file() and path.suffix.lower() in normalized
     )
 
 

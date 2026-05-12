@@ -33,9 +33,7 @@ def split_pdf(input_path: Path | str, num_parts: int = 2) -> list[SplitPart]:
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
     if total_pages < num_parts:
-        raise ValueError(
-            f"PDF has only {total_pages} page(s), cannot split into {num_parts} parts"
-        )
+        raise ValueError(f"PDF has only {total_pages} page(s), cannot split into {num_parts} parts")
 
     base_pages = total_pages // num_parts
     remainder = total_pages % num_parts
@@ -63,8 +61,10 @@ def split_pdf(input_path: Path | str, num_parts: int = 2) -> list[SplitPart]:
 def reverse_pdf(input_path: Path | str, output_path: Path | str | None = None) -> Path:
     """Reverse the page order of a PDF."""
     pdf_path = _require_pdf_file(input_path)
-    target_path = Path(output_path) if output_path else pdf_path.with_name(
-        f"{pdf_path.stem}_reversed{pdf_path.suffix}"
+    target_path = (
+        Path(output_path)
+        if output_path
+        else pdf_path.with_name(f"{pdf_path.stem}_reversed{pdf_path.suffix}")
     )
     require_extension(target_path, PDF_EXTENSIONS, "Output")
     ensure_output_not_inputs(target_path, [pdf_path])

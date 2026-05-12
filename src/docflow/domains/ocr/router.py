@@ -69,7 +69,10 @@ def cmd_run(args: argparse.Namespace) -> int:
             elif result.success:
                 print(f"[{index + 1}/{len(pdfs)}] {rel_path} - OCR completed")
             else:
-                print(f"[{index + 1}/{len(pdfs)}] {rel_path} - ERROR: {result.message}", file=sys.stderr)
+                print(
+                    f"[{index + 1}/{len(pdfs)}] {rel_path} - ERROR: {result.message}",
+                    file=sys.stderr,
+                )
 
     if not args.quiet:
         print()
@@ -125,7 +128,10 @@ def cmd_extract(args: argparse.Namespace) -> int:
                 status = "OCR'd + extracted" if result.ocr_performed else "extracted"
                 print(f"[{index + 1}/{len(pdfs)}] {rel_path} - {status}")
             else:
-                print(f"[{index + 1}/{len(pdfs)}] {rel_path} - ERROR: {result.message}", file=sys.stderr)
+                print(
+                    f"[{index + 1}/{len(pdfs)}] {rel_path} - ERROR: {result.message}",
+                    file=sys.stderr,
+                )
 
     if not args.quiet:
         print()

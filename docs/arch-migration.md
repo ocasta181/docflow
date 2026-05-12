@@ -54,17 +54,17 @@ Each stage should leave the tools working and tested.
 - [x] Route `docflow image to-pdf` to the image-to-PDF domain service.
 - [x] Route `docflow ocr run|extract` to the OCR domain service.
 - [x] Add top-level help text that makes command choice obvious.
-- [ ] Keep legacy commands as wrappers while migration is incomplete.
+- [x] Keep legacy commands as wrappers while migration is incomplete.
 
 ## Stage 5: Consolidate Tooling
 
 - [ ] Replace per-tool `pyproject.toml` files with one root `pyproject.toml`.
-- [ ] Define optional dependency groups for `pdf`, `image`, `ocr`, `all`, and
+- [x] Define optional dependency groups for `pdf`, `image`, `ocr`, `all`, and
       `dev`.
 - [ ] Move to one root `uv.lock`.
-- [ ] Add one root `justfile` with `setup`, `test`, `lint`, `format`, `build`,
+- [x] Add one root `justfile` with `setup`, `test`, `lint`, `format`, `build`,
       and `clean` tasks.
-- [ ] Run the full test suite from the repository root.
+- [x] Run the full test suite from the repository root.
 
 ## Stage 6: Release Preparation
 

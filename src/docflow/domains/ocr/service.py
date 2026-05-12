@@ -132,7 +132,9 @@ def extract_text(
     """Extract text from a PDF, running OCR first if needed."""
     input_path = Path(pdf_path)
     if not input_path.exists():
-        return ExtractResult(input_path, None, success=False, ocr_performed=False, message="File not found")
+        return ExtractResult(
+            input_path, None, success=False, ocr_performed=False, message="File not found"
+        )
 
     if output_path is None:
         output_path = input_path.with_suffix(".txt")
