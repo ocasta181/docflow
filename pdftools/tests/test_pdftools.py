@@ -173,6 +173,14 @@ class TestJoinPdfs:
         with pytest.raises(FileNotFoundError):
             join_pdfs(output, [pdf1, missing])
 
+    def test_join_output_matching_input_raises(self, temp_dir):
+        """Joining should not overwrite one of its source PDFs."""
+        pdf1 = create_test_pdf(temp_dir / "part1.pdf", 3)
+        pdf2 = create_test_pdf(temp_dir / "part2.pdf", 5)
+
+        with pytest.raises(ValueError, match="different from input"):
+            join_pdfs(pdf1, [pdf1, pdf2])
+
 
 class TestReversePdf:
     """Tests for reverse_pdf function."""

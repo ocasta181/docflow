@@ -104,6 +104,11 @@ def join_pdfs(output_path: Path, input_paths: list[Path]) -> Path:
     if len(input_paths) < 2:
         raise ValueError("Need at least 2 PDF files to join")
 
+    output_resolved = output_path.resolve()
+    for input_path in input_paths:
+        if output_resolved == input_path.resolve():
+            raise ValueError("Output path must be different from input paths")
+
     writer = PdfWriter()
 
     for input_path in input_paths:
