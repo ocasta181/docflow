@@ -5,7 +5,16 @@ description = "Small command-line utilities for document workflows"
 requires-python = ">=3.10"
 dependencies = []
 
+[project.scripts]
+docflow = "docflow.cli.app:main"
+
 [project.optional-dependencies]
+pdf = [
+    "pypdf>=4.0",
+]
+all = [
+    "pypdf>=4.0",
+]
 dev = [
     "pytest>=8.0",
 ]
