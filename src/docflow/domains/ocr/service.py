@@ -19,6 +19,12 @@ from docflow.shared import ensure_directory, ensure_output_not_inputs, find_file
 
 
 PDF_EXTENSIONS = {".pdf"}
+PDF_READ_ERRORS = (
+    fitz.FileDataError,
+    fitz.FileNotFoundError,
+    OSError,
+    ValueError,
+)
 
 
 def has_text(pdf_path: Path | str, min_chars: int = 100) -> bool:
@@ -34,7 +40,7 @@ def has_text(pdf_path: Path | str, min_chars: int = 100) -> bool:
             return len(text.strip()) >= min_chars
         finally:
             doc.close()
-    except Exception:
+    except PDF_READ_ERRORS:
         return False
 
 
@@ -145,7 +151,7 @@ def ocr_pdf(
         return OcrResult(input_path, success=True, skipped=False, message="OCR completed")
     except subprocess.TimeoutExpired:
         return OcrResult(input_path, success=False, skipped=False, message="Timeout")
-    except Exception as e:
+    except PDF_READ_ERRORS as e:
         return OcrResult(input_path, success=False, skipped=False, message=str(e))
 
 
@@ -196,7 +202,7 @@ def extract_text(
         if ocr_performed:
             return ExtractResult(input_path, output_path, True, True, "OCR'd and extracted")
         return ExtractResult(input_path, output_path, True, False, "Extracted existing text")
-    except Exception as e:
+    except PDF_READ_ERRORS as e:
         return ExtractResult(input_path, None, success=False, ocr_performed=False, message=str(e))
 
 

@@ -157,6 +157,31 @@ def test_ocr_pdf_passes_language_to_tesseract(tmp_path: Path, monkeypatch) -> No
     assert calls[0][calls[0].index("-l") + 1] == "eng+spa"
 
 
+def test_ocr_pdf_does_not_flatten_unexpected_errors(tmp_path: Path, monkeypatch) -> None:
+    pdf_path = tmp_path / "scan.pdf"
+    pdf_path.write_bytes(b"%PDF-1.7\n")
+    monkeypatch.setattr("docflow.domains.ocr.service.tesseract_unavailable_message", lambda: None)
+    monkeypatch.setattr(
+        "docflow.domains.ocr.service.fitz.open",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("unexpected bug")),
+    )
+
+    with pytest.raises(AssertionError, match="unexpected bug"):
+        ocr_pdf(pdf_path, skip_if_text=False)
+
+
+def test_extract_text_does_not_flatten_unexpected_errors(tmp_path: Path, monkeypatch) -> None:
+    pdf_path = tmp_path / "text.pdf"
+    pdf_path.write_bytes(b"%PDF-1.7\n")
+    monkeypatch.setattr(
+        "docflow.domains.ocr.service.fitz.open",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("unexpected bug")),
+    )
+
+    with pytest.raises(AssertionError, match="unexpected bug"):
+        extract_text(pdf_path)
+
+
 @pytest.mark.skipif(shutil.which("tesseract") is None, reason="Tesseract is not installed")
 def test_ocr_pdf_can_write_custom_output_for_scanned_pdf(tmp_path: Path) -> None:
     pdf_path = create_image_pdf(tmp_path / "scan.pdf")

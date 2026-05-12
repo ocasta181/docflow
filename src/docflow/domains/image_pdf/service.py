@@ -6,7 +6,7 @@ import os
 import re
 import tempfile
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
@@ -16,6 +16,8 @@ from docflow.shared import ensure_directory
 
 
 PAGE_WIDTH, PAGE_HEIGHT = LETTER
+IMAGE_READ_ERRORS = (OSError, UnidentifiedImageError, ValueError)
+EXIF_ORIENTATION_ERRORS = (AttributeError, KeyError, TypeError, ValueError)
 
 
 def create_pdfs_from_directory(
@@ -139,7 +141,7 @@ def apply_exif_orientation(img: Image.Image) -> Image.Image:
                     img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT).rotate(270, expand=True)
                 elif orientation == 8:
                     img = img.rotate(90, expand=True)
-    except Exception:
+    except EXIF_ORIENTATION_ERRORS:
         pass
 
     return img
@@ -193,7 +195,7 @@ def create_pdf(files: list[tuple[int, Path]], output_path: Path) -> tuple[bool, 
                 pages_added += 1
             finally:
                 os.unlink(tmp_path)
-        except Exception as e:
+        except IMAGE_READ_ERRORS as e:
             warnings.append(f"Warning: Could not process {file_path.name}: {e}")
             continue
 

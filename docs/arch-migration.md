@@ -96,7 +96,7 @@ Each stage should leave the tools working and tested.
       OCR.
 - [x] Make destructive OCR writes explicit, or add non-destructive output
       options.
-- [ ] Narrow broad exception handling where errors are currently swallowed or
+- [x] Narrow broad exception handling where errors are currently swallowed or
       flattened.
 - [x] Add type-checking configuration and a `py.typed` marker.
 - [x] Add a changelog now that `v0.1.0` exists.

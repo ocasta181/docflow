@@ -5,6 +5,7 @@ from PIL import Image
 from pypdf import PdfReader
 
 from docflow.domains.image_pdf.service import (
+    create_pdf,
     create_pdfs_from_directory,
     parse_filename,
     scan_directory,
@@ -113,3 +114,16 @@ def test_scan_directory_warns_for_non_matching_files(tmp_path: Path) -> None:
         "Skipping: notes.txt (doesn't match pattern)",
         "Skipping: random.jpg (doesn't match pattern)",
     ]
+
+
+def test_create_pdf_does_not_flatten_unexpected_errors(tmp_path: Path, monkeypatch) -> None:
+    image_path = tmp_path / "doc_1.jpg"
+    create_test_jpeg(image_path)
+
+    def fail_unexpectedly(*_args, **_kwargs):
+        raise AssertionError("unexpected bug")
+
+    monkeypatch.setattr("docflow.domains.image_pdf.service.Image.open", fail_unexpectedly)
+
+    with pytest.raises(AssertionError, match="unexpected bug"):
+        create_pdf([(1, image_path)], tmp_path / "doc.pdf")
