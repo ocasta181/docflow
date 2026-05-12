@@ -8,7 +8,7 @@ build:
         --distpath {{builds_dir}} \
         --workpath /tmp/jpg2pdf_build \
         --specpath /tmp \
-        jpg2pdf.py
+        main.py
 
 # Install dev dependencies
 setup:

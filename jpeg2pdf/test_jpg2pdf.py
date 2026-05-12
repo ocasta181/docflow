@@ -21,10 +21,9 @@ def create_test_jpeg(path: Path, width: int = 200, height: int = 300, color: tup
 
 
 def run_jpg2pdf(*args, cwd: Path) -> subprocess.CompletedProcess:
-    """Run the jpg2pdf script."""
-    script = Path(__file__).parent / 'jpg2pdf.py'
+    """Run the jpg2pdf module."""
     return subprocess.run(
-        [sys.executable, str(script), *args],
+        [sys.executable, "-m", "jpg2pdf", *args],
         cwd=cwd,
         capture_output=True,
         text=True
