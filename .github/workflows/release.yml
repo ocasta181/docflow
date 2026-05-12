@@ -27,8 +27,8 @@ jobs:
 
       - name: Verify
         run: |
-          uv run --extra dev ruff check src tests
-          uv run --extra dev ruff format --check src tests
+          uv run --extra dev ruff check src tests tools
+          uv run --extra dev ruff format --check src tests tools
           uv run --extra dev --extra pdf --extra image --extra ocr pyright
           uv run --extra dev --extra pdf --extra image --extra ocr pytest tests -q
 

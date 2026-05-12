@@ -20,15 +20,19 @@ typecheck:
 
 # Lint the root package and tests.
 lint:
-    uv run --extra dev ruff check src tests
+    uv run --extra dev ruff check src tests tools
 
 # Format the root package and tests.
 format:
-    uv run --extra dev ruff format src tests
+    uv run --extra dev ruff format src tests tools
 
 # Build the root package.
 build:
     uv build
+
+# Regenerate checked-in docs from command help.
+docs:
+    uv run --extra dev --extra pdf --extra image --extra ocr python tools/generate_cli_docs.py
 
 # Clean root-generated artifacts.
 clean:

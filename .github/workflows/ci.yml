@@ -33,10 +33,10 @@ jobs:
         uses: astral-sh/setup-uv@v8
 
       - name: Lint
-        run: uv run --extra dev ruff check src tests
+        run: uv run --extra dev ruff check src tests tools
 
       - name: Check formatting
-        run: uv run --extra dev ruff format --check src tests
+        run: uv run --extra dev ruff format --check src tests tools
 
       - name: Type-check
         run: uv run --extra dev --extra pdf --extra image --extra ocr pyright
