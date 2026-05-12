@@ -100,7 +100,7 @@ Each stage should leave the tools working and tested.
       flattened.
 - [x] Add type-checking configuration and a `py.typed` marker.
 - [x] Add a changelog now that `v0.1.0` exists.
-- [ ] Add release automation for tagged builds and release notes.
+- [x] Add release automation for tagged builds and release notes.
 - [ ] Generate or maintain CLI reference documentation from command help.
 - [ ] Add structured output support for scripting if real automation needs it.
 - [ ] Add OCR language selection.

@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  github-release:
+    name: Build and create GitHub release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8
+
+      - name: Verify
+        run: |
+          uv run --extra dev ruff check src tests
+          uv run --extra dev ruff format --check src tests
+          uv run --extra dev --extra pdf --extra image --extra ocr pyright
+          uv run --extra dev --extra pdf --extra image --extra ocr pytest tests -q
+
+      - name: Build package
+        run: uv build
+
+      - name: Smoke test wheel
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          wheel="$(ls dist/docflow-*.whl)"
+          uv venv "$tmp/venv"
+          uv pip install --python "$tmp/venv/bin/python" "$wheel[all]"
+          "$tmp/venv/bin/docflow" --version
+          "$tmp/venv/bin/docflow" --help >/dev/null
+          "$tmp/venv/bin/pdftools" --help >/dev/null
+          "$tmp/venv/bin/jpg2pdf" --help >/dev/null
+          "$tmp/venv/bin/batch-ocr" --help >/dev/null
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes
