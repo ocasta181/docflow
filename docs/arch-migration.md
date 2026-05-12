@@ -5,24 +5,24 @@ Each stage should leave the tools working and tested.
 
 ## Stage 0: Repository Hygiene
 
-- [ ] Initialize the root git repository.
-- [ ] Add a root `.gitignore` for caches, virtualenvs, build outputs, and local
+- [x] Initialize the root git repository.
+- [x] Add a root `.gitignore` for caches, virtualenvs, build outputs, and local
       settings.
-- [ ] Remove generated artifacts from version control if any were committed.
-- [ ] Confirm git commits use the `ocasta181` profile.
-- [ ] Run a local secrets scan before publishing.
+- [x] Remove generated artifacts from version control if any were committed.
+- [x] Confirm git commits use the `ocasta181` profile.
+- [x] Run a local secrets scan before publishing.
 
 ## Stage 1: Stabilize Existing Tools
 
-- [ ] Add missing `jpg2pdf` test dependencies.
-- [ ] Replace `jpg2pdf`'s hardcoded `.venv/bin/python` test runner with the
+- [x] Add missing `jpg2pdf` test dependencies.
+- [x] Replace `jpg2pdf`'s hardcoded `.venv/bin/python` test runner with the
       active Python interpreter or normal `pytest` entry points.
-- [ ] Add a `jpg2pdf` test command to its `justfile`.
-- [ ] Add output-path conflict checks to PDF join operations.
-- [ ] Replace unsafe temporary-name creation in OCR code with managed temporary
+- [x] Add a `jpg2pdf` test command to its `justfile`.
+- [x] Add output-path conflict checks to PDF join operations.
+- [x] Replace unsafe temporary-name creation in OCR code with managed temporary
       files or directories.
-- [ ] Ensure OCR cleanup runs on failure paths.
-- [ ] Run all existing tests and record any external dependencies required.
+- [x] Ensure OCR cleanup runs on failure paths.
+- [x] Run all existing tests and record any external dependencies required.
 
 ## Stage 2: Normalize Package Shape
 
