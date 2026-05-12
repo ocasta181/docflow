@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import fitz
@@ -22,6 +23,27 @@ def test_docflow_ocr_run_skips_pdf_with_text(tmp_path: Path, capsys) -> None:
     assert result == 0
     captured = capsys.readouterr()
     assert "Skipped: Already has text" in captured.out
+
+
+def test_docflow_ocr_run_json_skips_pdf_with_text(tmp_path: Path, capsys) -> None:
+    pdf_path = create_text_pdf(tmp_path / "text.pdf")
+
+    result = main(["ocr", "run", str(pdf_path), "--json"])
+
+    assert result == 0
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert payload == {
+        "command": "ocr run",
+        "result": {
+            "message": "Already has text",
+            "output_path": None,
+            "path": str(pdf_path),
+            "skipped": True,
+            "success": True,
+        },
+        "success": True,
+    }
 
 
 def test_docflow_ocr_extract_writes_text_file(tmp_path: Path, capsys) -> None:
@@ -121,3 +143,15 @@ def test_docflow_ocr_reports_missing_path(tmp_path: Path, capsys) -> None:
     assert result == 1
     captured = capsys.readouterr()
     assert "Path not found" in captured.err
+
+
+def test_docflow_ocr_json_reports_missing_path(tmp_path: Path, capsys) -> None:
+    missing_path = tmp_path / "missing"
+
+    result = main(["ocr", "run", str(missing_path), "--json"])
+
+    assert result == 1
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert payload == {"error": f"Path not found: {missing_path.resolve()}", "success": False}
+    assert captured.err == ""

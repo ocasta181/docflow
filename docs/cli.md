@@ -38,7 +38,7 @@ options:
 ## `docflow pdf reverse`
 
 ```text
-usage: docflow pdf reverse [-h] [--output OUTPUT] input
+usage: docflow pdf reverse [-h] [--output OUTPUT] [--json] input
 
 positional arguments:
   input                 Input PDF file
@@ -47,12 +47,13 @@ options:
   -h, --help            show this help message and exit
   --output OUTPUT, -o OUTPUT
                         Output PDF file (default: INPUTNAME_reversed.pdf)
+  --json                Emit machine-readable JSON output
 ```
 
 ## `docflow pdf join`
 
 ```text
-usage: docflow pdf join [-h] output inputs [inputs ...]
+usage: docflow pdf join [-h] [--json] output inputs [inputs ...]
 
 positional arguments:
   output      Output PDF file
@@ -60,12 +61,13 @@ positional arguments:
 
 options:
   -h, --help  show this help message and exit
+  --json      Emit machine-readable JSON output
 ```
 
 ## `docflow pdf split`
 
 ```text
-usage: docflow pdf split [-h] [--parts PARTS] input
+usage: docflow pdf split [-h] [--parts PARTS] [--json] input
 
 positional arguments:
   input                 Input PDF file
@@ -74,6 +76,7 @@ options:
   -h, --help            show this help message and exit
   --parts PARTS, -n PARTS
                         Number of parts to split into (default: 2)
+  --json                Emit machine-readable JSON output
 ```
 
 ## `docflow image`
@@ -92,7 +95,7 @@ options:
 ## `docflow image to-pdf`
 
 ```text
-usage: docflow image to-pdf [-h] [--prefix PREFIX] [--output OUTPUT]
+usage: docflow image to-pdf [-h] [--prefix PREFIX] [--output OUTPUT] [--json]
                             [directory]
 
 positional arguments:
@@ -105,6 +108,7 @@ options:
                         insensitive)
   --output OUTPUT, -o OUTPUT
                         Output directory (default: ./pdfs/)
+  --json                Emit machine-readable JSON output
 ```
 
 ## `docflow ocr`
@@ -125,7 +129,7 @@ options:
 
 ```text
 usage: docflow ocr run [-h] [--no-recursive] [--dry-run] [--quiet]
-                       [--lang LANG] [--force] [--output OUTPUT]
+                       [--lang LANG] [--json] [--force] [--output OUTPUT]
                        [--output-dir OUTPUT_DIR]
                        path
 
@@ -139,6 +143,7 @@ options:
   --quiet, -q           Only show errors and summary
   --lang LANG           Tesseract language code(s) to use when OCR is needed
                         (default: eng)
+  --json                Emit machine-readable JSON output
   --force, -f           Run OCR even on files that already have text
   --output OUTPUT, -o OUTPUT
                         Output PDF file for a single input PDF
@@ -151,7 +156,7 @@ options:
 
 ```text
 usage: docflow ocr extract [-h] [--no-recursive] [--dry-run] [--quiet]
-                           [--lang LANG]
+                           [--lang LANG] [--json]
                            path
 
 positional arguments:
@@ -164,4 +169,5 @@ options:
   --quiet, -q         Only show errors and summary
   --lang LANG         Tesseract language code(s) to use when OCR is needed
                       (default: eng)
+  --json              Emit machine-readable JSON output
 ```

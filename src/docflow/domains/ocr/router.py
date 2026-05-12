@@ -4,6 +4,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from docflow.cli.output import add_json_argument, emit_json
+
 
 def register_ocr_parser(subparsers: argparse._SubParsersAction) -> None:
     ocr_parser = subparsers.add_parser("ocr", help="OCR and text extraction")
@@ -38,52 +40,110 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     path = Path(args.path).resolve()
     if args.output and args.output_dir:
+        if args.json:
+            emit_json({"success": False, "error": "Use either --output or --output-dir, not both"})
+            return 1
         print("Error: Use either --output or --output-dir, not both", file=sys.stderr)
         return 1
 
     if not path.exists():
+        if args.json:
+            emit_json({"success": False, "error": f"Path not found: {path}"})
+            return 1
         print(f"Error: Path not found: {path}", file=sys.stderr)
         return 1
 
     if path.is_file():
         if path.suffix.lower() != ".pdf":
+            if args.json:
+                emit_json({"success": False, "error": f"Not a PDF file: {path}"})
+                return 1
             print(f"Error: Not a PDF file: {path}", file=sys.stderr)
             return 1
         output_path = _single_ocr_output_path(path, args)
         if args.dry_run:
+            if args.json:
+                emit_json(
+                    {
+                        "success": True,
+                        "command": "ocr run",
+                        "dry_run": True,
+                        "inputs": [{"path": path, "output": output_path}],
+                    }
+                )
+                return 0
             print(f"Would process: {_format_output_mapping(path, output_path)}")
             return 0
-        print(f"Processing: {path}")
+        if not args.json:
+            print(f"Processing: {path}")
         result = ocr_pdf(
             path,
             output_path=output_path,
             skip_if_text=not args.force,
             language=args.lang,
         )
+        if args.json:
+            emit_json(
+                {
+                    "success": result.success,
+                    "command": "ocr run",
+                    "result": _ocr_result_payload(result, output_path),
+                }
+            )
+            return 0 if result.success else 1
         exit_code = _print_ocr_single_result(result)
         if exit_code == 0 and output_path is not None and not result.skipped:
             print(f"  Output: {output_path}")
         return exit_code
 
     if args.output:
+        if args.json:
+            emit_json(
+                {"success": False, "error": "--output can only be used with a single PDF file"}
+            )
+            return 1
         print("Error: --output can only be used with a single PDF file", file=sys.stderr)
         return 1
 
     recursive = not args.no_recursive
     pdfs = find_pdfs(path, recursive)
     if not pdfs:
+        if args.json:
+            emit_json(
+                {
+                    "success": True,
+                    "command": "ocr run",
+                    "message": f"No PDF files found in {path}",
+                    "results": [],
+                }
+            )
+            return 0
         print(f"No PDF files found in {path}")
         return 0
 
     if args.dry_run:
+        if args.json:
+            emit_json(
+                {
+                    "success": True,
+                    "command": "ocr run",
+                    "dry_run": True,
+                    "inputs": [
+                        {"path": pdf, "output": _directory_ocr_output_path(path, pdf, args)}
+                        for pdf in pdfs
+                    ],
+                }
+            )
+            return 0
         print(f"Found {len(pdfs)} PDF file(s) to process in {path}:")
         for pdf in pdfs:
             output_path = _directory_ocr_output_path(path, pdf, args)
             print(f"  {_format_output_mapping(pdf.relative_to(path), output_path)}")
         return 0
 
-    print(f"Processing {len(pdfs)} PDF file(s) in {path}")
-    print()
+    if not args.json:
+        print(f"Processing {len(pdfs)} PDF file(s) in {path}")
+        print()
 
     results = []
     for index, pdf_path in enumerate(pdfs):
@@ -94,8 +154,8 @@ def cmd_run(args: argparse.Namespace) -> int:
             skip_if_text=not args.force,
             language=args.lang,
         )
-        results.append(result)
-        if not args.quiet:
+        results.append((result, output_path))
+        if not args.quiet and not args.json:
             rel_path = pdf_path.relative_to(path)
             if result.skipped:
                 print(f"[{index + 1}/{len(pdfs)}] {rel_path} - skipped ({result.message})")
@@ -108,12 +168,24 @@ def cmd_run(args: argparse.Namespace) -> int:
                     file=sys.stderr,
                 )
 
-    if not args.quiet:
+    if not args.quiet and not args.json:
         print()
 
-    processed = sum(1 for result in results if result.success and not result.skipped)
-    skipped = sum(1 for result in results if result.skipped)
-    errors = sum(1 for result in results if not result.success)
+    processed = sum(1 for result, _ in results if result.success and not result.skipped)
+    skipped = sum(1 for result, _ in results if result.skipped)
+    errors = sum(1 for result, _ in results if not result.success)
+    if args.json:
+        emit_json(
+            {
+                "success": errors == 0,
+                "command": "ocr run",
+                "summary": {"processed": processed, "skipped": skipped, "errors": errors},
+                "results": [
+                    _ocr_result_payload(result, output_path) for result, output_path in results
+                ],
+            }
+        )
+        return 1 if errors else 0
     print(f"Done: {processed} OCR'd, {skipped} skipped, {errors} errors")
     return 1 if errors else 0
 
@@ -123,40 +195,87 @@ def cmd_extract(args: argparse.Namespace) -> int:
 
     path = Path(args.path).resolve()
     if not path.exists():
+        if args.json:
+            emit_json({"success": False, "error": f"Path not found: {path}"})
+            return 1
         print(f"Error: Path not found: {path}", file=sys.stderr)
         return 1
 
     if path.is_file():
         if path.suffix.lower() != ".pdf":
+            if args.json:
+                emit_json({"success": False, "error": f"Not a PDF file: {path}"})
+                return 1
             print(f"Error: Not a PDF file: {path}", file=sys.stderr)
             return 1
         if args.dry_run:
+            if args.json:
+                emit_json(
+                    {
+                        "success": True,
+                        "command": "ocr extract",
+                        "dry_run": True,
+                        "inputs": [path],
+                    }
+                )
+                return 0
             print(f"Would extract text from: {path}")
             return 0
-        print(f"Processing: {path}")
+        if not args.json:
+            print(f"Processing: {path}")
         result = extract_text(path, ocr_if_needed=True, language=args.lang)
+        if args.json:
+            emit_json(
+                {
+                    "success": result.success,
+                    "command": "ocr extract",
+                    "result": result,
+                }
+            )
+            return 0 if result.success else 1
         return _print_extract_single_result(result)
 
     recursive = not args.no_recursive
     pdfs = find_pdfs(path, recursive)
     if not pdfs:
+        if args.json:
+            emit_json(
+                {
+                    "success": True,
+                    "command": "ocr extract",
+                    "message": f"No PDF files found in {path}",
+                    "results": [],
+                }
+            )
+            return 0
         print(f"No PDF files found in {path}")
         return 0
 
     if args.dry_run:
+        if args.json:
+            emit_json(
+                {
+                    "success": True,
+                    "command": "ocr extract",
+                    "dry_run": True,
+                    "inputs": pdfs,
+                }
+            )
+            return 0
         print(f"Found {len(pdfs)} PDF file(s) to extract text from in {path}:")
         for pdf in pdfs:
             print(f"  {pdf.relative_to(path)}")
         return 0
 
-    print(f"Extracting text from {len(pdfs)} PDF file(s) in {path}")
-    print()
+    if not args.json:
+        print(f"Extracting text from {len(pdfs)} PDF file(s) in {path}")
+        print()
 
     results = []
     for index, pdf_path in enumerate(pdfs):
         result = extract_text(pdf_path, ocr_if_needed=True, language=args.lang)
         results.append(result)
-        if not args.quiet:
+        if not args.quiet and not args.json:
             rel_path = pdf_path.relative_to(path)
             if result.success:
                 status = "OCR'd + extracted" if result.ocr_performed else "extracted"
@@ -167,12 +286,22 @@ def cmd_extract(args: argparse.Namespace) -> int:
                     file=sys.stderr,
                 )
 
-    if not args.quiet:
+    if not args.quiet and not args.json:
         print()
 
     extracted = sum(1 for result in results if result.success and not result.ocr_performed)
     ocrd = sum(1 for result in results if result.success and result.ocr_performed)
     errors = sum(1 for result in results if not result.success)
+    if args.json:
+        emit_json(
+            {
+                "success": errors == 0,
+                "command": "ocr extract",
+                "summary": {"extracted": extracted, "ocrd": ocrd, "errors": errors},
+                "results": results,
+            }
+        )
+        return 1 if errors else 0
     print(f"Done: {extracted} extracted, {ocrd} OCR'd + extracted, {errors} errors")
     return 1 if errors else 0
 
@@ -202,6 +331,7 @@ def _add_common_arguments(parser: argparse.ArgumentParser) -> None:
         default="eng",
         help="Tesseract language code(s) to use when OCR is needed (default: eng)",
     )
+    add_json_argument(parser)
 
 
 def _print_ocr_single_result(result) -> int:
@@ -246,3 +376,13 @@ def _print_extract_single_result(result) -> int:
         return 0
     print(f"  Error: {result.message}", file=sys.stderr)
     return 1
+
+
+def _ocr_result_payload(result, output_path: Path | None) -> dict[str, object]:
+    return {
+        "path": result.path,
+        "output_path": output_path,
+        "success": result.success,
+        "skipped": result.skipped,
+        "message": result.message,
+    }

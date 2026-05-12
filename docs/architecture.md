@@ -37,6 +37,8 @@ docflow ocr extract /path/to/file-or-folder
 
 Legacy executables may exist as thin compatibility wrappers during migration,
 but the durable interface should be the single `docflow` command.
+Commands should support `--json` where script consumers need stable,
+machine-readable output without scraping human progress text.
 
 ## Domains
 
@@ -111,6 +113,7 @@ Shared code should cover behavior that every domain should get right once:
 - PDF page count helpers
 - consistent command result models
 - consistent warning, error, summary, and quiet-mode output
+- structured JSON output for script-friendly command results
 - common exit-code mapping
 
 Shared infrastructure should not contain domain business logic. For example,

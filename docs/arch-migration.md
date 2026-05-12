@@ -102,5 +102,5 @@ Each stage should leave the tools working and tested.
 - [x] Add a changelog now that `v0.1.0` exists.
 - [x] Add release automation for tagged builds and release notes.
 - [x] Generate or maintain CLI reference documentation from command help.
-- [ ] Add structured output support for scripting if real automation needs it.
+- [x] Add structured output support for scripting if real automation needs it.
 - [x] Add OCR language selection.

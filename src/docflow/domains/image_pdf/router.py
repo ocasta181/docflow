@@ -4,6 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from docflow.cli.output import add_json_argument, emit_json
 from docflow.shared import PathValidationError
 
 
@@ -32,6 +33,7 @@ def register_image_parser(subparsers: argparse._SubParsersAction) -> None:
         default="./pdfs/",
         help="Output directory (default: ./pdfs/)",
     )
+    add_json_argument(to_pdf_parser)
     to_pdf_parser.set_defaults(handler=cmd_to_pdf)
 
 
@@ -45,8 +47,22 @@ def cmd_to_pdf(args: argparse.Namespace) -> int:
             prefix_filter=args.prefix,
         )
     except (PathValidationError, OSError, ValueError) as e:
+        if args.json:
+            emit_json({"success": False, "error": str(e)})
+            return 1
         print(f"Error: {e}", file=sys.stderr)
         return 1
+
+    if args.json:
+        emit_json(
+            {
+                "success": True,
+                "command": "image to-pdf",
+                "results": results,
+                "warnings": warnings,
+            }
+        )
+        return 0
 
     for warning in warnings:
         print(warning, file=sys.stderr)

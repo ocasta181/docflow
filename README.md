@@ -65,6 +65,14 @@ uv run docflow ocr extract ./pdfs
 uv run docflow ocr run ./document.pdf --force
 ```
 
+Add `--json` to a command when a script needs stable machine-readable output
+instead of human progress text:
+
+```bash
+uv run docflow pdf reverse input.pdf --json
+uv run docflow ocr run ./pdfs --output-dir ./ocr-pdfs --json
+```
+
 ## Legacy Aliases
 
 The original executable names route to the unified command:

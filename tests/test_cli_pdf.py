@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from pypdf import PdfReader, PdfWriter
@@ -23,6 +24,23 @@ def test_docflow_pdf_reverse_command(tmp_path: Path, capsys) -> None:
     assert (tmp_path / "input_reversed.pdf").exists()
     captured = capsys.readouterr()
     assert "Created:" in captured.out
+
+
+def test_docflow_pdf_reverse_json_output(tmp_path: Path, capsys) -> None:
+    input_pdf = create_test_pdf(tmp_path / "input.pdf", 2)
+
+    result = main(["pdf", "reverse", str(input_pdf), "--json"])
+
+    assert result == 0
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert payload == {
+        "command": "pdf reverse",
+        "input": str(input_pdf),
+        "output": str(tmp_path / "input_reversed.pdf"),
+        "pages": 2,
+        "success": True,
+    }
 
 
 def test_docflow_pdf_join_command(tmp_path: Path, capsys) -> None:
@@ -56,3 +74,14 @@ def test_docflow_pdf_command_reports_errors(tmp_path: Path, capsys) -> None:
     assert result == 1
     captured = capsys.readouterr()
     assert "File not found" in captured.err
+
+
+def test_docflow_pdf_json_reports_errors(tmp_path: Path, capsys) -> None:
+    result = main(["pdf", "reverse", str(tmp_path / "missing.pdf"), "--json"])
+
+    assert result == 1
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert payload["success"] is False
+    assert "File not found" in payload["error"]
+    assert captured.err == ""
