@@ -51,6 +51,7 @@ all = [
     "reportlab>=4.0",
 ]
 dev = [
+    "pyright>=1.1",
     "pyinstaller>=6.0",
     "pytest>=8.0",
     "ruff>=0.8",
@@ -70,3 +71,9 @@ packages = ["src/docflow"]
 
 [tool.ruff]
 line-length = 100
+
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.10"
+typeCheckingMode = "basic"
+reportMissingTypeStubs = false

@@ -14,6 +14,10 @@ test:
 test-all:
     {{root_test}}
 
+# Type-check the root package.
+typecheck:
+    uv run --extra dev --extra pdf --extra image --extra ocr pyright
+
 # Lint the root package and tests.
 lint:
     uv run --extra dev ruff check src tests

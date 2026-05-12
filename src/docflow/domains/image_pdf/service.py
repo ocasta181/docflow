@@ -126,17 +126,17 @@ def apply_exif_orientation(img: Image.Image) -> Image.Image:
                 orientation = exif[orientation_tag]
 
                 if orientation == 2:
-                    img = img.transpose(Image.FLIP_LEFT_RIGHT)
+                    img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
                 elif orientation == 3:
                     img = img.rotate(180, expand=True)
                 elif orientation == 4:
-                    img = img.transpose(Image.FLIP_TOP_BOTTOM)
+                    img = img.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
                 elif orientation == 5:
-                    img = img.transpose(Image.FLIP_LEFT_RIGHT).rotate(90, expand=True)
+                    img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT).rotate(90, expand=True)
                 elif orientation == 6:
                     img = img.rotate(270, expand=True)
                 elif orientation == 7:
-                    img = img.transpose(Image.FLIP_LEFT_RIGHT).rotate(270, expand=True)
+                    img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT).rotate(270, expand=True)
                 elif orientation == 8:
                     img = img.rotate(90, expand=True)
     except Exception:

@@ -98,7 +98,7 @@ Each stage should leave the tools working and tested.
       options.
 - [ ] Narrow broad exception handling where errors are currently swallowed or
       flattened.
-- [ ] Add type-checking configuration and a `py.typed` marker.
+- [x] Add type-checking configuration and a `py.typed` marker.
 - [x] Add a changelog now that `v0.1.0` exists.
 - [ ] Add release automation for tagged builds and release notes.
 - [ ] Generate or maintain CLI reference documentation from command help.

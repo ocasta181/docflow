@@ -41,7 +41,7 @@ def tesseract_unavailable_message() -> str | None:
 
 def _get_bundle_dir() -> Path | None:
     if getattr(sys, "frozen", False):
-        return Path(sys._MEIPASS)
+        return Path(str(getattr(sys, "_MEIPASS")))
     return None
 
 

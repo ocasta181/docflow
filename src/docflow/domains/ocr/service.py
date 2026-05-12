@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+from typing import Any, cast
 
 import fitz
 
@@ -27,7 +28,7 @@ def has_text(pdf_path: Path | str, min_chars: int = 100) -> bool:
         try:
             text = ""
             for page in doc:
-                text += page.get_text()
+                text += cast(str, page.get_text())
                 if len(text) >= min_chars:
                     return True
             return len(text.strip()) >= min_chars
@@ -77,7 +78,7 @@ def ocr_pdf(
                 for page_num in range(len(doc)):
                     page = doc[page_num]
 
-                    if skip_if_text and len(page.get_text().strip()) > 50:
+                    if skip_if_text and len(cast(str, page.get_text()).strip()) > 50:
                         continue
 
                     pix = page.get_pixmap(dpi=300)
@@ -101,7 +102,7 @@ def ocr_pdf(
                     )
 
                     if result.returncode != 0:
-                        error = result.stderr.strip() or "Tesseract failed"
+                        error = str(result.stderr).strip() or "Tesseract failed"
                         return OcrResult(input_path, success=False, skipped=False, message=error)
 
                     ocr_pdf_path = pdf_path_out.with_suffix(".pdf")
@@ -110,7 +111,11 @@ def ocr_pdf(
                         try:
                             ocr_page = ocr_doc[0]
                             text_page = ocr_page.get_textpage()
-                            blocks = ocr_page.get_text("dict", textpage=text_page)["blocks"]
+                            page_text = cast(
+                                dict[str, Any],
+                                ocr_page.get_text("dict", textpage=text_page),
+                            )
+                            blocks = page_text["blocks"]
 
                             for block in blocks:
                                 if block["type"] == 0:
@@ -161,7 +166,7 @@ def extract_text(
     try:
         doc = fitz.open(input_path)
         try:
-            text = "".join(page.get_text() for page in doc)
+            text = "".join(cast(str, page.get_text()) for page in doc)
         finally:
             doc.close()
 
@@ -180,7 +185,7 @@ def extract_text(
             ocr_performed = True
             doc = fitz.open(input_path)
             try:
-                text = "".join(page.get_text() for page in doc)
+                text = "".join(cast(str, page.get_text()) for page in doc)
             finally:
                 doc.close()
 
