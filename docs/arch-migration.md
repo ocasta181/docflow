@@ -49,11 +49,11 @@ Each stage should leave the tools working and tested.
 - [x] Add the `docflow` executable.
 - [x] Add the `pdf` subcommand group.
 - [x] Add the `image` subcommand group.
-- [ ] Add the `ocr` subcommand group.
+- [x] Add the `ocr` subcommand group.
 - [x] Route `docflow pdf reverse|join|split` to the PDF domain service.
 - [x] Route `docflow image to-pdf` to the image-to-PDF domain service.
-- [ ] Route `docflow ocr run|extract` to the OCR domain service.
-- [ ] Add top-level help text that makes command choice obvious.
+- [x] Route `docflow ocr run|extract` to the OCR domain service.
+- [x] Add top-level help text that makes command choice obvious.
 - [ ] Keep legacy commands as wrappers while migration is incomplete.
 
 ## Stage 5: Consolidate Tooling
