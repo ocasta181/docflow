@@ -12,8 +12,14 @@ docflow = "docflow.cli.app:main"
 pdf = [
     "pypdf>=4.0",
 ]
+image = [
+    "Pillow>=10.0",
+    "reportlab>=4.0",
+]
 all = [
+    "Pillow>=10.0",
     "pypdf>=4.0",
+    "reportlab>=4.0",
 ]
 dev = [
     "pytest>=8.0",

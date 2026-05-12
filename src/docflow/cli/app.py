@@ -3,6 +3,7 @@
 import argparse
 import sys
 
+from docflow.domains.image_pdf.router import register_image_parser
 from docflow.domains.pdf.router import register_pdf_parser
 
 
@@ -12,6 +13,7 @@ def main(argv: list[str] | None = None) -> int:
         description="Document workflow utilities",
     )
     subparsers = parser.add_subparsers(dest="domain", required=True)
+    register_image_parser(subparsers)
     register_pdf_parser(subparsers)
 
     args = parser.parse_args(argv)
