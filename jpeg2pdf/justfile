@@ -15,6 +15,10 @@ setup:
     uv venv
     source .venv/bin/activate && uv pip install -e ".[dev]"
 
+# Run tests
+test:
+    uv run --extra dev python test_jpg2pdf.py
+
 # Clean build artifacts
 clean:
     rm -rf build dist *.spec __pycache__

@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 from PIL import Image
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 
 
 def create_test_jpeg(path: Path, width: int = 200, height: int = 300, color: tuple = (255, 0, 0)):
@@ -22,10 +22,9 @@ def create_test_jpeg(path: Path, width: int = 200, height: int = 300, color: tup
 
 def run_jpg2pdf(*args, cwd: Path) -> subprocess.CompletedProcess:
     """Run the jpg2pdf script."""
-    python = Path(__file__).parent / '.venv' / 'bin' / 'python'
     script = Path(__file__).parent / 'jpg2pdf.py'
     return subprocess.run(
-        [str(python), str(script), *args],
+        [sys.executable, str(script), *args],
         cwd=cwd,
         capture_output=True,
         text=True
