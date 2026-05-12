@@ -26,12 +26,12 @@ Each stage should leave the tools working and tested.
 
 ## Stage 2: Normalize Package Shape
 
-- [ ] Convert `jpg2pdf` from a single script into a package.
-- [ ] Split `jpg2pdf` into `core.py` or `service.py` plus `cli.py`.
-- [ ] Make all command entry points return integer exit codes instead of calling
+- [x] Convert `jpg2pdf` from a single script into a package.
+- [x] Split `jpg2pdf` into `core.py` or `service.py` plus `cli.py`.
+- [x] Make all command entry points return integer exit codes instead of calling
       `sys.exit()` inside testable functions.
-- [ ] Keep existing `pdftools`, `jpg2pdf`, and `batch-ocr` commands working.
-- [ ] Add CLI tests for the normalized `jpg2pdf` command.
+- [x] Keep existing `pdftools`, `jpg2pdf`, and `batch-ocr` commands working.
+- [x] Add CLI tests for the normalized `jpg2pdf` command.
 
 ## Stage 3: Introduce Shared Infrastructure
 
