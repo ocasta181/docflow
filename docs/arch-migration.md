@@ -88,7 +88,7 @@ Each stage should leave the tools working and tested.
 
 ## Stage 8: Post-Migration Hardening
 
-- [ ] Add CI for lint, format checks, tests, build, and wheel smoke tests.
+- [x] Add CI for lint, format checks, tests, build, and wheel smoke tests.
 - [ ] Add a `docflow --version` command backed by package metadata.
 - [ ] Add no-extra install tests for missing `pdf`, `image`, and `ocr`
       optional dependencies.
