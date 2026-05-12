@@ -35,13 +35,13 @@ Each stage should leave the tools working and tested.
 
 ## Stage 3: Introduce Shared Infrastructure
 
-- [ ] Add shared path validation helpers.
-- [ ] Add shared safe temporary file/directory helpers.
-- [ ] Add shared output conflict checks.
-- [ ] Add shared command result and summary models.
+- [x] Add shared path validation helpers.
+- [x] Add shared safe temporary file/directory helpers.
+- [x] Add shared output conflict checks.
+- [x] Add shared command result and summary models.
 - [ ] Move duplicated page-count and file-discovery behavior into shared
       modules only where two or more domains use it.
-- [ ] Keep domain-specific behavior inside domain modules.
+- [x] Keep domain-specific behavior inside domain modules.
 
 ## Stage 4: Create Unified CLI
 
