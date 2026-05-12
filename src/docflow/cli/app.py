@@ -1,6 +1,7 @@
 """Top-level docflow command-line interface."""
 
 import argparse
+from importlib.metadata import PackageNotFoundError, version
 import sys
 
 from docflow.cli.errors import format_optional_dependency_error
@@ -10,16 +11,29 @@ from docflow.domains.pdf.router import register_pdf_parser
 
 
 def main(argv: list[str] | None = None) -> int:
+    cli_args = list(sys.argv[1:] if argv is None else argv)
+    if cli_args == ["--version"]:
+        print(f"docflow {_package_version()}")
+        return 0
+
     parser = argparse.ArgumentParser(
         prog="docflow",
         description="Document workflow utilities",
+    )
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        help="Show the installed version and exit",
     )
     subparsers = parser.add_subparsers(dest="domain", required=True)
     register_image_parser(subparsers)
     register_ocr_parser(subparsers)
     register_pdf_parser(subparsers)
 
-    args = parser.parse_args(argv)
+    try:
+        args = parser.parse_args(cli_args)
+    except SystemExit as error:
+        return error.code if isinstance(error.code, int) else 1
     handler = getattr(args, "handler", None)
     if handler is None:
         parser.print_help()
@@ -33,6 +47,13 @@ def main(argv: list[str] | None = None) -> int:
             raise
         print(message, file=sys.stderr)
         return 1
+
+
+def _package_version() -> str:
+    try:
+        return version("docflow")
+    except PackageNotFoundError:
+        return "0+unknown"
 
 
 if __name__ == "__main__":
