@@ -87,93 +87,89 @@ def ocr_pdf(pdf_path: Path, output_path: Path | None = None, skip_if_text: bool 
     if skip_if_text and has_text(pdf_path):
         return OcrResult(pdf_path, success=True, skipped=True, message="Already has text")
 
-    # If no output path, use a temp file then replace original
     in_place = output_path is None
-    if in_place:
-        output_path = Path(tempfile.mktemp(suffix=".pdf"))
 
     try:
-        doc = fitz.open(pdf_path)
+        with tempfile.TemporaryDirectory() as temp_dir_name:
+            temp_dir = Path(temp_dir_name)
+            target_path = output_path or temp_dir / "output.pdf"
+            doc = fitz.open(pdf_path)
 
-        for page_num in range(len(doc)):
-            page = doc[page_num]
+            try:
+                for page_num in range(len(doc)):
+                    page = doc[page_num]
 
-            # Check if page already has text
-            if skip_if_text and len(page.get_text().strip()) > 50:
-                continue
+                    # Check if page already has text
+                    if skip_if_text and len(page.get_text().strip()) > 50:
+                        continue
 
-            # Render page to image
-            pix = page.get_pixmap(dpi=300)
-            img_path = Path(tempfile.mktemp(suffix=".png"))
-            pix.save(str(img_path))
+                    # Render page to image
+                    pix = page.get_pixmap(dpi=300)
+                    img_path = temp_dir / f"page-{page_num}.png"
+                    pix.save(str(img_path))
 
-            # Run tesseract to get PDF with text layer
-            pdf_path_out = Path(tempfile.mktemp(suffix=""))
-            result = subprocess.run(
-                [
-                    _get_tesseract_cmd(),
-                    str(img_path),
-                    str(pdf_path_out),
-                    "-l", "eng",
-                    "pdf",
-                ],
-                capture_output=True,
-                text=True,
-                timeout=120,
-                env=_get_tesseract_env(),
-            )
+                    # Run tesseract to get PDF with text layer
+                    pdf_path_out = temp_dir / f"page-{page_num}-ocr"
+                    result = subprocess.run(
+                        [
+                            _get_tesseract_cmd(),
+                            str(img_path),
+                            str(pdf_path_out),
+                            "-l", "eng",
+                            "pdf",
+                        ],
+                        capture_output=True,
+                        text=True,
+                        timeout=120,
+                        env=_get_tesseract_env(),
+                    )
 
-            img_path.unlink()
+                    if result.returncode != 0:
+                        error = result.stderr.strip() or "Tesseract failed"
+                        return OcrResult(pdf_path, success=False, skipped=False, message=error)
 
-            if result.returncode != 0:
-                error = result.stderr.strip() or "Tesseract failed"
-                return OcrResult(pdf_path, success=False, skipped=False, message=error)
+                    # Extract text from tesseract PDF and insert into original
+                    ocr_pdf_path = pdf_path_out.with_suffix(".pdf")
+                    if ocr_pdf_path.exists():
+                        ocr_doc = fitz.open(ocr_pdf_path)
+                        try:
+                            ocr_page = ocr_doc[0]
 
-            # Extract text from tesseract PDF and insert into original
-            ocr_pdf_path = Path(str(pdf_path_out) + ".pdf")
-            if ocr_pdf_path.exists():
-                ocr_doc = fitz.open(ocr_pdf_path)
-                ocr_page = ocr_doc[0]
+                            # Get text dict from OCR'd page and insert into original
+                            text_page = ocr_page.get_textpage()
+                            blocks = ocr_page.get_text("dict", textpage=text_page)["blocks"]
 
-                # Get text dict from OCR'd page and insert into original
-                text_page = ocr_page.get_textpage()
-                blocks = ocr_page.get_text("dict", textpage=text_page)["blocks"]
+                            for block in blocks:
+                                if block["type"] == 0:  # text block
+                                    for line in block["lines"]:
+                                        for span in line["spans"]:
+                                            # Insert invisible text at the correct position
+                                            rect = fitz.Rect(span["bbox"])
+                                            # Scale rect from 300 DPI image coords to page coords
+                                            scale = page.rect.width / pix.width
+                                            scaled_rect = rect * scale
 
-                for block in blocks:
-                    if block["type"] == 0:  # text block
-                        for line in block["lines"]:
-                            for span in line["spans"]:
-                                # Insert invisible text at the correct position
-                                rect = fitz.Rect(span["bbox"])
-                                # Scale rect from 300 DPI image coords to page coords
-                                scale = page.rect.width / pix.width
-                                scaled_rect = rect * scale
+                                            page.insert_textbox(
+                                                scaled_rect,
+                                                span["text"],
+                                                fontsize=span["size"] * scale,
+                                                render_mode=3,  # invisible
+                                            )
+                        finally:
+                            ocr_doc.close()
 
-                                page.insert_textbox(
-                                    scaled_rect,
-                                    span["text"],
-                                    fontsize=span["size"] * scale,
-                                    render_mode=3,  # invisible
-                                )
+                doc.save(str(target_path))
+            finally:
+                doc.close()
 
-                ocr_doc.close()
-                ocr_pdf_path.unlink()
-
-        doc.save(str(output_path))
-        doc.close()
-
-        if in_place:
-            shutil.move(str(output_path), str(pdf_path))
+            if in_place:
+                shutil.move(str(target_path), str(pdf_path))
 
         return OcrResult(pdf_path, success=True, skipped=False, message="OCR completed")
 
     except subprocess.TimeoutExpired:
-        if in_place and output_path.exists():
-            output_path.unlink()
         return OcrResult(pdf_path, success=False, skipped=False, message="Timeout")
     except Exception as e:
-        if in_place and output_path.exists():
-            output_path.unlink()
         return OcrResult(pdf_path, success=False, skipped=False, message=str(e))
 
 
