@@ -80,8 +80,8 @@ Each stage should leave the tools working and tested.
 
 ## Stage 7: Remove Migration Shims
 
-- [ ] Decide whether legacy executables remain supported aliases.
-- [ ] Remove compatibility wrappers that are not part of the public interface.
-- [ ] Delete obsolete per-tool build files.
-- [ ] Delete obsolete specs after their behavior is covered by tests and docs.
-- [ ] Update migration docs with completed decisions.
+- [x] Decide whether legacy executables remain supported aliases.
+- [x] Remove compatibility wrappers that are not part of the public interface.
+- [x] Delete obsolete per-tool build files.
+- [x] Delete obsolete specs after their behavior is covered by tests and docs.
+- [x] Update migration docs with completed decisions.
