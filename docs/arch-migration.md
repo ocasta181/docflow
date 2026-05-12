@@ -76,7 +76,7 @@ Each stage should leave the tools working and tested.
 - [x] Build a wheel from a clean checkout.
 - [x] Install the wheel in a fresh environment and smoke-test each command.
 - [x] Run a final secrets scan.
-- [ ] Tag the first release.
+- [x] Tag the first release.
 
 ## Stage 7: Remove Migration Shims
 
