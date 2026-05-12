@@ -85,3 +85,22 @@ Each stage should leave the tools working and tested.
 - [x] Delete obsolete per-tool build files.
 - [x] Delete obsolete specs after their behavior is covered by tests and docs.
 - [x] Update migration docs with completed decisions.
+
+## Stage 8: Post-Migration Hardening
+
+- [ ] Add CI for lint, format checks, tests, build, and wheel smoke tests.
+- [ ] Add a `docflow --version` command backed by package metadata.
+- [ ] Add no-extra install tests for missing `pdf`, `image`, and `ocr`
+      optional dependencies.
+- [ ] Add a clear Tesseract preflight error for OCR work that actually needs
+      OCR.
+- [ ] Make destructive OCR writes explicit, or add non-destructive output
+      options.
+- [ ] Narrow broad exception handling where errors are currently swallowed or
+      flattened.
+- [ ] Add type-checking configuration and a `py.typed` marker.
+- [ ] Add a changelog now that `v0.1.0` exists.
+- [ ] Add release automation for tagged builds and release notes.
+- [ ] Generate or maintain CLI reference documentation from command help.
+- [ ] Add structured output support for scripting if real automation needs it.
+- [ ] Add OCR language selection.
