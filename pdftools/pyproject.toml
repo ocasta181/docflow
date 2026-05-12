@@ -1,0 +1,21 @@
+[project]
+name = "pdftools"
+version = "0.1.0"
+description = "Split and join PDF files"
+requires-python = ">=3.10"
+dependencies = [
+    "pypdf>=4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pyinstaller>=6.0",
+]
+
+[project.scripts]
+pdftools = "pdftools:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

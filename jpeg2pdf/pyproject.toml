@@ -1,0 +1,21 @@
+[project]
+name = "jpg2pdf"
+version = "0.1.0"
+description = "Combine sequentially-numbered JPEG files into PDFs, grouped by filename prefix"
+requires-python = ">=3.10"
+dependencies = [
+    "Pillow>=10.0.0",
+    "reportlab>=4.0.0",
+]
+
+[project.scripts]
+jpg2pdf = "jpg2pdf:main"
+
+[project.optional-dependencies]
+dev = [
+    "pyinstaller>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
