@@ -3,16 +3,17 @@
 Small command-line utilities for document workflows.
 
 `docflow` is the working name for this toolkit. The current code still ships as
-separate tools while the repository migrates toward one unified command.
+one unified command with legacy aliases for the original tool names.
 
 ## Use The Right Tool
 
 Run these tools with `uv`, not `python` directly.
 
-- From a tool directory, use `uv run <command> ...`
-- For PDF page order changes or PDF merging, use `pdftools`
-- For JPEG-to-PDF conversion, use `jpg2pdf`
-- For OCR on existing PDFs, use `batch-ocr`
+- For PDF page order changes or PDF merging, use `uv run docflow pdf ...`
+- For JPEG-to-PDF conversion, use `uv run docflow image to-pdf ...`
+- For OCR on existing PDFs, use `uv run docflow ocr ...`
+- The legacy aliases `pdftools`, `jpg2pdf`, and `batch-ocr` still work during
+  migration.
 
 ## Included tools
 
@@ -23,7 +24,7 @@ PDF page operations:
 - join multiple PDFs
 - split one PDF into multiple parts
 
-Run from `pdftools/` with `uv run pdftools ...`.
+Run with `uv run docflow pdf ...`.
 
 See `pdftools/README.md` for commands and examples.
 
@@ -31,7 +32,7 @@ See `pdftools/README.md` for commands and examples.
 
 Combine sequentially numbered JPEG files into PDFs, grouped by filename prefix.
 
-Run from `jpeg2pdf/` with `uv run jpg2pdf ...`.
+Run with `uv run docflow image to-pdf ...`.
 
 See `jpeg2pdf/README.md` for usage.
 
@@ -39,17 +40,16 @@ See `jpeg2pdf/README.md` for usage.
 
 Recursively OCR PDF files in directories.
 
-Run from `batch-ocr/` with `uv run batch-ocr ...`.
+Run with `uv run docflow ocr ...`.
 
 See `batch-ocr/README.md` for usage.
 
 ## Reverse And Combine PDFs
 
-Use `pdftools`, not `jpg2pdf` or `batch-ocr`.
+Use `docflow pdf`, not `docflow image` or `docflow ocr`.
 
 ```bash
-cd pdftools
-uv run pdftools reverse file1.pdf
-uv run pdftools reverse file2.pdf
-uv run pdftools join combined.pdf file1_reversed.pdf file2_reversed.pdf
+uv run docflow pdf reverse file1.pdf
+uv run docflow pdf reverse file2.pdf
+uv run docflow pdf join combined.pdf file1_reversed.pdf file2_reversed.pdf
 ```

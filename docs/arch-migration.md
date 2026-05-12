@@ -58,10 +58,10 @@ Each stage should leave the tools working and tested.
 
 ## Stage 5: Consolidate Tooling
 
-- [ ] Replace per-tool `pyproject.toml` files with one root `pyproject.toml`.
+- [x] Replace per-tool `pyproject.toml` files with one root `pyproject.toml`.
 - [x] Define optional dependency groups for `pdf`, `image`, `ocr`, `all`, and
       `dev`.
-- [ ] Move to one root `uv.lock`.
+- [x] Move to one root `uv.lock`.
 - [x] Add one root `justfile` with `setup`, `test`, `lint`, `format`, `build`,
       and `clean` tasks.
 - [x] Run the full test suite from the repository root.
