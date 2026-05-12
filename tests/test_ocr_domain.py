@@ -1,5 +1,6 @@
 from pathlib import Path
 import shutil
+import subprocess
 
 import fitz
 from PIL import Image, ImageDraw
@@ -131,6 +132,29 @@ def test_ocr_pdf_rejects_non_pdf_output_path(tmp_path: Path) -> None:
     assert not result.success
     assert not result.skipped
     assert "Output must have extension: .pdf" in result.message
+
+
+def test_ocr_pdf_passes_language_to_tesseract(tmp_path: Path, monkeypatch) -> None:
+    pdf_path = create_image_pdf(tmp_path / "scan.pdf")
+    calls = []
+
+    def fake_run(command, **_kwargs):
+        calls.append(command)
+        return subprocess.CompletedProcess(command, 0, "", "")
+
+    monkeypatch.setattr("docflow.domains.ocr.service.tesseract_unavailable_message", lambda: None)
+    monkeypatch.setattr("docflow.domains.ocr.service.subprocess.run", fake_run)
+
+    result = ocr_pdf(
+        pdf_path,
+        output_path=tmp_path / "ocr.pdf",
+        skip_if_text=True,
+        language="eng+spa",
+    )
+
+    assert result.success
+    assert calls
+    assert calls[0][calls[0].index("-l") + 1] == "eng+spa"
 
 
 @pytest.mark.skipif(shutil.which("tesseract") is None, reason="Tesseract is not installed")

@@ -124,8 +124,9 @@ options:
 ## `docflow ocr run`
 
 ```text
-usage: docflow ocr run [-h] [--no-recursive] [--dry-run] [--quiet] [--force]
-                       [--output OUTPUT] [--output-dir OUTPUT_DIR]
+usage: docflow ocr run [-h] [--no-recursive] [--dry-run] [--quiet]
+                       [--lang LANG] [--force] [--output OUTPUT]
+                       [--output-dir OUTPUT_DIR]
                        path
 
 positional arguments:
@@ -136,6 +137,8 @@ options:
   --no-recursive, -n    Don't process subdirectories
   --dry-run, -d         Show what would be processed without making changes
   --quiet, -q           Only show errors and summary
+  --lang LANG           Tesseract language code(s) to use when OCR is needed
+                        (default: eng)
   --force, -f           Run OCR even on files that already have text
   --output OUTPUT, -o OUTPUT
                         Output PDF file for a single input PDF
@@ -147,7 +150,9 @@ options:
 ## `docflow ocr extract`
 
 ```text
-usage: docflow ocr extract [-h] [--no-recursive] [--dry-run] [--quiet] path
+usage: docflow ocr extract [-h] [--no-recursive] [--dry-run] [--quiet]
+                           [--lang LANG]
+                           path
 
 positional arguments:
   path                Directory to process (or single PDF file)
@@ -157,4 +162,6 @@ options:
   --no-recursive, -n  Don't process subdirectories
   --dry-run, -d       Show what would be processed without making changes
   --quiet, -q         Only show errors and summary
+  --lang LANG         Tesseract language code(s) to use when OCR is needed
+                      (default: eng)
 ```

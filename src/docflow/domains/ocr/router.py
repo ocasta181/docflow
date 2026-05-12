@@ -54,7 +54,12 @@ def cmd_run(args: argparse.Namespace) -> int:
             print(f"Would process: {_format_output_mapping(path, output_path)}")
             return 0
         print(f"Processing: {path}")
-        result = ocr_pdf(path, output_path=output_path, skip_if_text=not args.force)
+        result = ocr_pdf(
+            path,
+            output_path=output_path,
+            skip_if_text=not args.force,
+            language=args.lang,
+        )
         exit_code = _print_ocr_single_result(result)
         if exit_code == 0 and output_path is not None and not result.skipped:
             print(f"  Output: {output_path}")
@@ -83,7 +88,12 @@ def cmd_run(args: argparse.Namespace) -> int:
     results = []
     for index, pdf_path in enumerate(pdfs):
         output_path = _directory_ocr_output_path(path, pdf_path, args)
-        result = ocr_pdf(pdf_path, output_path=output_path, skip_if_text=not args.force)
+        result = ocr_pdf(
+            pdf_path,
+            output_path=output_path,
+            skip_if_text=not args.force,
+            language=args.lang,
+        )
         results.append(result)
         if not args.quiet:
             rel_path = pdf_path.relative_to(path)
@@ -124,7 +134,7 @@ def cmd_extract(args: argparse.Namespace) -> int:
             print(f"Would extract text from: {path}")
             return 0
         print(f"Processing: {path}")
-        result = extract_text(path, ocr_if_needed=True)
+        result = extract_text(path, ocr_if_needed=True, language=args.lang)
         return _print_extract_single_result(result)
 
     recursive = not args.no_recursive
@@ -144,7 +154,7 @@ def cmd_extract(args: argparse.Namespace) -> int:
 
     results = []
     for index, pdf_path in enumerate(pdfs):
-        result = extract_text(pdf_path, ocr_if_needed=True)
+        result = extract_text(pdf_path, ocr_if_needed=True, language=args.lang)
         results.append(result)
         if not args.quiet:
             rel_path = pdf_path.relative_to(path)
@@ -186,6 +196,11 @@ def _add_common_arguments(parser: argparse.ArgumentParser) -> None:
         "-q",
         action="store_true",
         help="Only show errors and summary",
+    )
+    parser.add_argument(
+        "--lang",
+        default="eng",
+        help="Tesseract language code(s) to use when OCR is needed (default: eng)",
     )
 
 

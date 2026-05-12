@@ -42,6 +42,7 @@ def ocr_pdf(
     pdf_path: Path | str,
     output_path: Path | None = None,
     skip_if_text: bool = True,
+    language: str = "eng",
 ) -> OcrResult:
     """Run OCR on a single PDF file."""
     input_path = Path(pdf_path)
@@ -92,7 +93,7 @@ def ocr_pdf(
                             str(img_path),
                             str(pdf_path_out),
                             "-l",
-                            "eng",
+                            language,
                             "pdf",
                         ],
                         capture_output=True,
@@ -152,6 +153,7 @@ def extract_text(
     pdf_path: Path | str,
     output_path: Path | None = None,
     ocr_if_needed: bool = True,
+    language: str = "eng",
 ) -> ExtractResult:
     """Extract text from a PDF, running OCR first if needed."""
     input_path = Path(pdf_path)
@@ -172,7 +174,7 @@ def extract_text(
 
         ocr_performed = False
         if len(text.strip()) < 100 and ocr_if_needed:
-            ocr_result = ocr_pdf(input_path, skip_if_text=False)
+            ocr_result = ocr_pdf(input_path, skip_if_text=False, language=language)
             if not ocr_result.success:
                 return ExtractResult(
                     input_path,
@@ -214,6 +216,7 @@ def ocr_directory(
     directory: Path | str,
     recursive: bool = True,
     skip_if_text: bool = True,
+    language: str = "eng",
     callback: Callable[[Path, int, int], None] | None = None,
 ) -> list[OcrResult]:
     """Run OCR on PDFs in a directory."""
@@ -224,6 +227,6 @@ def ocr_directory(
     for index, pdf_path in enumerate(pdfs):
         if callback:
             callback(pdf_path, index, len(pdfs))
-        results.append(ocr_pdf(pdf_path, skip_if_text=skip_if_text))
+        results.append(ocr_pdf(pdf_path, skip_if_text=skip_if_text, language=language))
 
     return results

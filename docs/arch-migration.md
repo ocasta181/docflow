@@ -103,4 +103,4 @@ Each stage should leave the tools working and tested.
 - [x] Add release automation for tagged builds and release notes.
 - [x] Generate or maintain CLI reference documentation from command help.
 - [ ] Add structured output support for scripting if real automation needs it.
-- [ ] Add OCR language selection.
+- [x] Add OCR language selection.

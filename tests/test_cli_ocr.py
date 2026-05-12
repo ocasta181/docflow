@@ -45,6 +45,22 @@ def test_docflow_ocr_run_dry_run_directory(tmp_path: Path, capsys) -> None:
     assert "Found 1 PDF" in captured.out
 
 
+def test_docflow_ocr_run_help_lists_language_option(capsys) -> None:
+    result = main(["ocr", "run", "--help"])
+
+    assert result == 0
+    captured = capsys.readouterr()
+    assert "--lang" in captured.out
+
+
+def test_docflow_ocr_extract_help_lists_language_option(capsys) -> None:
+    result = main(["ocr", "extract", "--help"])
+
+    assert result == 0
+    captured = capsys.readouterr()
+    assert "--lang" in captured.out
+
+
 def test_docflow_ocr_run_dry_run_single_file_shows_output(tmp_path: Path, capsys) -> None:
     pdf_path = create_text_pdf(tmp_path / "text.pdf")
     output_path = tmp_path / "ocr.pdf"
