@@ -3,6 +3,7 @@
 import argparse
 import sys
 
+from docflow.cli.errors import format_optional_dependency_error
 from docflow.domains.image_pdf.router import register_image_parser
 from docflow.domains.ocr.router import register_ocr_parser
 from docflow.domains.pdf.router import register_pdf_parser
@@ -23,7 +24,15 @@ def main(argv: list[str] | None = None) -> int:
     if handler is None:
         parser.print_help()
         return 1
-    return handler(args)
+
+    try:
+        return handler(args)
+    except ModuleNotFoundError as error:
+        message = format_optional_dependency_error(error)
+        if message is None:
+            raise
+        print(message, file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
