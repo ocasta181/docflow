@@ -68,6 +68,40 @@ def test_ocr_pdf_reports_missing_file(tmp_path: Path) -> None:
     assert "not found" in result.message.lower()
 
 
+def test_ocr_pdf_reports_clear_error_when_tesseract_is_missing(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    pdf_path = create_image_pdf(tmp_path / "scan.pdf")
+    monkeypatch.setattr(
+        "docflow.domains.ocr.service.tesseract_unavailable_message",
+        lambda: "Tesseract executable not found. Install Tesseract and ensure it is on PATH.",
+    )
+
+    result = ocr_pdf(pdf_path, skip_if_text=True)
+
+    assert not result.success
+    assert not result.skipped
+    assert result.message.startswith("Tesseract executable not found")
+
+
+def test_ocr_pdf_skips_text_pdf_without_tesseract_preflight(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    pdf_path = create_text_pdf(tmp_path / "text.pdf")
+
+    def fail_preflight() -> str | None:
+        raise AssertionError("Tesseract should not be checked for skipped text PDFs")
+
+    monkeypatch.setattr("docflow.domains.ocr.service.tesseract_unavailable_message", fail_preflight)
+
+    result = ocr_pdf(pdf_path, skip_if_text=True)
+
+    assert result.success
+    assert result.skipped
+
+
 def test_ocr_pdf_rejects_non_pdf_file(tmp_path: Path) -> None:
     text_file = tmp_path / "notes.txt"
     text_file.write_text("hello")

@@ -79,6 +79,8 @@ New scripts should prefer `docflow`.
 OCR uses PyMuPDF for PDF inspection/manipulation and shells out to the
 `tesseract` executable to create page-level OCR output. In normal Python
 installs, `tesseract` must be installed separately and available on `PATH`.
+If OCR is needed and Tesseract cannot be found, `docflow` fails before page
+processing starts and prints installation guidance.
 
 When running from a frozen standalone binary, the runtime first looks for a
 bundled `tesseract` executable and `tessdata` directory beside the extracted

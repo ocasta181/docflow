@@ -9,7 +9,11 @@ import tempfile
 import fitz
 
 from docflow.domains.ocr.models import ExtractResult, OcrResult
-from docflow.domains.ocr.tesseract import get_tesseract_cmd, get_tesseract_env
+from docflow.domains.ocr.tesseract import (
+    get_tesseract_cmd,
+    get_tesseract_env,
+    tesseract_unavailable_message,
+)
 from docflow.shared import ensure_directory, find_files
 
 
@@ -45,6 +49,10 @@ def ocr_pdf(
 
     if skip_if_text and has_text(input_path):
         return OcrResult(input_path, success=True, skipped=True, message="Already has text")
+
+    unavailable_message = tesseract_unavailable_message()
+    if unavailable_message is not None:
+        return OcrResult(input_path, success=False, skipped=False, message=unavailable_message)
 
     in_place = output_path is None
 

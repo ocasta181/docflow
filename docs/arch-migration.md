@@ -92,7 +92,7 @@ Each stage should leave the tools working and tested.
 - [x] Add a `docflow --version` command backed by package metadata.
 - [x] Add no-extra install tests for missing `pdf`, `image`, and `ocr`
       optional dependencies.
-- [ ] Add a clear Tesseract preflight error for OCR work that actually needs
+- [x] Add a clear Tesseract preflight error for OCR work that actually needs
       OCR.
 - [ ] Make destructive OCR writes explicit, or add non-destructive output
       options.
