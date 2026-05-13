@@ -18,7 +18,7 @@ OPTIONAL_DEPENDENCIES = {
 
 
 def format_optional_dependency_error(error: ModuleNotFoundError) -> str | None:
-    dependency = OPTIONAL_DEPENDENCIES.get(error.name or "")
+    dependency = get_optional_dependency(error)
     if dependency is None:
         return None
 
@@ -26,3 +26,7 @@ def format_optional_dependency_error(error: ModuleNotFoundError) -> str | None:
         f"Missing optional dependency: {dependency.package_name}. "
         f"Install with `docflow[{dependency.extra}]` or `docflow[all]`."
     )
+
+
+def get_optional_dependency(error: ModuleNotFoundError) -> OptionalDependency | None:
+    return OPTIONAL_DEPENDENCIES.get(error.name or "")

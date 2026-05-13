@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from docflow.cli.app import main
@@ -57,6 +59,24 @@ def test_missing_optional_dependency_prints_install_hint(
     assert f"Missing optional dependency: {package_name}" in captured.err
     assert f"docflow[{extra}]" in captured.err
     assert "docflow[all]" in captured.err
+
+
+def test_missing_optional_dependency_respects_json(monkeypatch, capsys) -> None:
+    def missing_dependency(_args) -> int:
+        raise ModuleNotFoundError("No module named 'pypdf'", name="pypdf")
+
+    monkeypatch.setattr(pdf_router, "cmd_reverse", missing_dependency)
+
+    result = main(["pdf", "reverse", "input.pdf", "--json"])
+
+    assert result == 1
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert json.loads(captured.out) == {
+        "error": "Missing optional dependency: pypdf. Install with `docflow[pdf]` or `docflow[all]`.",
+        "missing_dependency": {"extra": "pdf", "package": "pypdf"},
+        "success": False,
+    }
 
 
 def test_unknown_module_not_found_errors_are_not_swallowed(monkeypatch) -> None:

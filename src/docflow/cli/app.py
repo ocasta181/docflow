@@ -4,7 +4,8 @@ import argparse
 from importlib.metadata import PackageNotFoundError, version
 import sys
 
-from docflow.cli.errors import format_optional_dependency_error
+from docflow.cli.errors import format_optional_dependency_error, get_optional_dependency
+from docflow.cli.output import emit_json
 from docflow.domains.image_pdf.router import register_image_parser
 from docflow.domains.ocr.router import register_ocr_parser
 from docflow.domains.pdf.router import register_pdf_parser
@@ -42,9 +43,22 @@ def main(argv: list[str] | None = None) -> int:
     try:
         return handler(args)
     except ModuleNotFoundError as error:
-        message = format_optional_dependency_error(error)
-        if message is None:
+        dependency = get_optional_dependency(error)
+        if dependency is None:
             raise
+        message = format_optional_dependency_error(error)
+        if getattr(args, "json", False):
+            emit_json(
+                {
+                    "success": False,
+                    "error": message,
+                    "missing_dependency": {
+                        "package": dependency.package_name,
+                        "extra": dependency.extra,
+                    },
+                }
+            )
+            return 1
         print(message, file=sys.stderr)
         return 1
 
