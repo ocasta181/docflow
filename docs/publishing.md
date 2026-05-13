@@ -43,7 +43,7 @@ secret.
 
 Expected PyPI publisher configuration:
 
-- PyPI project: `docflow`
+- PyPI project: `docflow-cli`
 - Owner/repository: `ocasta181/docflow`
 - Workflow: `.github/workflows/release.yml`
 - Environment: `pypi`

@@ -9,13 +9,18 @@ from typing import Any, cast
 
 import fitz
 
-from docflow.domains.ocr.models import ExtractResult, OcrResult
-from docflow.domains.ocr.tesseract import (
+from docflow_cli.domains.ocr.models import ExtractResult, OcrResult
+from docflow_cli.domains.ocr.tesseract import (
     get_tesseract_cmd,
     get_tesseract_env,
     tesseract_unavailable_message,
 )
-from docflow.shared import ensure_directory, ensure_output_not_inputs, find_files, require_extension
+from docflow_cli.shared import (
+    ensure_directory,
+    ensure_output_not_inputs,
+    find_files,
+    require_extension,
+)
 
 
 PDF_EXTENSIONS = {".pdf"}

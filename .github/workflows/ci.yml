@@ -74,7 +74,7 @@ jobs:
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
 
-          wheel="$(ls dist/docflow-*.whl)"
+          wheel="$(ls dist/docflow_cli-*.whl)"
           uv venv "$tmp/venv"
           uv pip install --python "$tmp/venv/bin/python" "$wheel"
           "$tmp/venv/bin/docflow" --help >/dev/null
@@ -86,7 +86,7 @@ jobs:
 
           test "$status" -eq 1
           printf '%s\n' "$output" | grep -F 'Missing optional dependency: pypdf' >/dev/null
-          printf '%s\n' "$output" | grep -F 'docflow[pdf]' >/dev/null
+          printf '%s\n' "$output" | grep -F 'docflow-cli[pdf]' >/dev/null
 
           set +e
           output=$("$tmp/venv/bin/docflow" image to-pdf "$tmp/scans" 2>&1 >/dev/null)
@@ -95,7 +95,7 @@ jobs:
 
           test "$status" -eq 1
           printf '%s\n' "$output" | grep -F 'Missing optional dependency: Pillow' >/dev/null
-          printf '%s\n' "$output" | grep -F 'docflow[image]' >/dev/null
+          printf '%s\n' "$output" | grep -F 'docflow-cli[image]' >/dev/null
 
           set +e
           output=$("$tmp/venv/bin/docflow" ocr run "$tmp/missing.pdf" 2>&1 >/dev/null)
@@ -104,7 +104,7 @@ jobs:
 
           test "$status" -eq 1
           printf '%s\n' "$output" | grep -F 'Missing optional dependency: PyMuPDF' >/dev/null
-          printf '%s\n' "$output" | grep -F 'docflow[ocr]' >/dev/null
+          printf '%s\n' "$output" | grep -F 'docflow-cli[ocr]' >/dev/null
 
       - name: Smoke test all-extra wheel
         run: |
@@ -112,7 +112,7 @@ jobs:
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
 
-          wheel="$(ls dist/docflow-*.whl)"
+          wheel="$(ls dist/docflow_cli-*.whl)"
           uv venv "$tmp/venv"
           uv pip install --python "$tmp/venv/bin/python" "$wheel[all]"
           "$tmp/venv/bin/python" - "$tmp" <<'PY'

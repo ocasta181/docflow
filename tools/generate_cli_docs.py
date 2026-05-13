@@ -4,7 +4,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 from pathlib import Path
 
-from docflow.cli.app import main
+from docflow_cli.cli.app import main
 
 
 COMMANDS = [

@@ -2,9 +2,10 @@
 
 Small command-line utilities for document workflows.
 
-`docflow` is the package name and primary executable. The legacy command names
-`pdftools`, `jpg2pdf`, and `batch-ocr` are still available as compatibility
-aliases while the project finishes migration.
+`docflow-cli` is the distribution package name. `docflow` is the primary
+executable. The legacy command names `pdftools`, `jpg2pdf`, and `batch-ocr`
+are still available as compatibility aliases while the project finishes
+migration.
 
 See [docs/publishing.md](docs/publishing.md) for release and publishing steps.
 
@@ -34,7 +35,7 @@ uv run docflow --help
 After package publication:
 
 ```bash
-uv tool install "docflow[all]"
+uv tool install "docflow-cli[all]"
 docflow --help
 ```
 

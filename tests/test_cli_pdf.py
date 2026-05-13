@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pypdf import PdfReader, PdfWriter
 
-from docflow.cli.app import main
+from docflow_cli.cli.app import main
 
 
 def create_test_pdf(path: Path, page_count: int) -> Path:

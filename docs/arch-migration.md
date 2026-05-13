@@ -45,7 +45,7 @@ Each stage should leave the tools working and tested.
 
 ## Stage 4: Create Unified CLI
 
-- [x] Add a new root package under `src/docflow`.
+- [x] Add a new root package under `src/docflow_cli`.
 - [x] Add the `docflow` executable.
 - [x] Add the `pdf` subcommand group.
 - [x] Add the `image` subcommand group.

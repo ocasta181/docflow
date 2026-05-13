@@ -11,8 +11,8 @@ from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 
-from docflow.domains.image_pdf.models import ImagePdfResult
-from docflow.shared import ensure_directory
+from docflow_cli.domains.image_pdf.models import ImagePdfResult
+from docflow_cli.shared import ensure_directory
 
 
 PAGE_WIDTH, PAGE_HEIGHT = LETTER

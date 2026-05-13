@@ -4,11 +4,11 @@ import argparse
 from importlib.metadata import PackageNotFoundError, version
 import sys
 
-from docflow.cli.errors import format_optional_dependency_error, get_optional_dependency
-from docflow.cli.output import emit_json
-from docflow.domains.image_pdf.router import register_image_parser
-from docflow.domains.ocr.router import register_ocr_parser
-from docflow.domains.pdf.router import register_pdf_parser
+from docflow_cli.cli.errors import format_optional_dependency_error, get_optional_dependency
+from docflow_cli.cli.output import emit_json
+from docflow_cli.domains.image_pdf.router import register_image_parser
+from docflow_cli.domains.ocr.router import register_ocr_parser
+from docflow_cli.domains.pdf.router import register_pdf_parser
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
 
 def _package_version() -> str:
     try:
-        return version("docflow")
+        return version("docflow-cli")
     except PackageNotFoundError:
         return "0+unknown"
 

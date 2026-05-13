@@ -4,8 +4,8 @@ from pathlib import Path
 
 from pypdf import PdfReader, PdfWriter
 
-from docflow.domains.pdf.models import SplitPart
-from docflow.shared import (
+from docflow_cli.domains.pdf.models import SplitPart
+from docflow_cli.shared import (
     atomic_output_path,
     ensure_file,
     ensure_output_not_inputs,

@@ -45,7 +45,7 @@ machine-readable output without scraping human progress text.
 The code should be organized by domain:
 
 ```text
-src/docflow/
+src/docflow_cli/
   cli/
     app.py
     errors.py

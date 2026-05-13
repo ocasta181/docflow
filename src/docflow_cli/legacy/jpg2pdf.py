@@ -2,7 +2,7 @@
 
 import sys
 
-from docflow.cli.app import main as docflow_main
+from docflow_cli.cli.app import main as docflow_main
 
 
 def main(argv: list[str] | None = None) -> int:

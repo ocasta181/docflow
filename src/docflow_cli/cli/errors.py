@@ -24,7 +24,7 @@ def format_optional_dependency_error(error: ModuleNotFoundError) -> str | None:
 
     return (
         f"Missing optional dependency: {dependency.package_name}. "
-        f"Install with `docflow[{dependency.extra}]` or `docflow[all]`."
+        f"Install with `docflow-cli[{dependency.extra}]` or `docflow-cli[all]`."
     )
 
 

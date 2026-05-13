@@ -3,7 +3,7 @@ from pathlib import Path
 
 import fitz
 
-from docflow.cli.app import main
+from docflow_cli.cli.app import main
 
 
 def create_text_pdf(path: Path) -> Path:

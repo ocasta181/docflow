@@ -1,6 +1,6 @@
 from importlib.metadata import version
 
-from docflow.cli.app import main
+from docflow_cli.cli.app import main
 
 
 def test_docflow_version_prints_package_version(capsys) -> None:
@@ -8,7 +8,7 @@ def test_docflow_version_prints_package_version(capsys) -> None:
 
     assert result == 0
     captured = capsys.readouterr()
-    assert captured.out == f"docflow {version('docflow')}\n"
+    assert captured.out == f"docflow {version('docflow-cli')}\n"
     assert captured.err == ""
 
 

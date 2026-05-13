@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 from pypdf import PdfReader
 
-from docflow.cli.app import main
+from docflow_cli.cli.app import main
 
 
 def create_test_jpeg(path: Path) -> None:
