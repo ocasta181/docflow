@@ -8,6 +8,8 @@ are still available as compatibility aliases while the project finishes
 migration.
 
 See [docs/publishing.md](docs/publishing.md) for release and publishing steps.
+See [docs/json-output.md](docs/json-output.md) for machine-readable output
+contracts.
 
 ## Requirements
 

@@ -38,7 +38,8 @@ docflow ocr extract /path/to/file-or-folder
 Legacy executables may exist as thin compatibility wrappers during migration,
 but the durable interface should be the single `docflow` command.
 Commands should support `--json` where script consumers need stable,
-machine-readable output without scraping human progress text.
+machine-readable output without scraping human progress text. The JSON shapes
+should be documented as a public scripting contract.
 
 ## Domains
 
