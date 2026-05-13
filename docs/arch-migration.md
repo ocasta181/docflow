@@ -110,4 +110,4 @@ Each stage should leave the tools working and tested.
 - [x] Make top-level optional dependency errors respect `--json`.
 - [x] Add a single local quality-gate command for pre-push verification.
 - [x] Check generated CLI documentation in CI.
-- [ ] Add a short publishing runbook for tags, releases, and package upload.
+- [x] Add a short publishing runbook for tags, releases, and package upload.

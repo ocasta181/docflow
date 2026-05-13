@@ -6,6 +6,8 @@ Small command-line utilities for document workflows.
 `pdftools`, `jpg2pdf`, and `batch-ocr` are still available as compatibility
 aliases while the project finishes migration.
 
+See [docs/publishing.md](docs/publishing.md) for release and publishing steps.
+
 ## Requirements
 
 - Python 3.10 or newer
