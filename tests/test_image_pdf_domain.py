@@ -17,6 +17,14 @@ def create_test_jpeg(path: Path, color: tuple[int, int, int] = (255, 0, 0)) -> N
     image.save(path, "JPEG")
 
 
+def create_test_png(
+    path: Path,
+    color: tuple[int, int, int, int] = (0, 128, 0, 255),
+) -> None:
+    image = Image.new("RGBA", (200, 300), color)
+    image.save(path, "PNG")
+
+
 def test_create_pdfs_from_directory_groups_by_prefix(tmp_path: Path) -> None:
     create_test_jpeg(tmp_path / "invoice_1.jpg")
     create_test_jpeg(tmp_path / "invoice_2.jpg")
@@ -76,6 +84,36 @@ def test_create_pdfs_from_directory_accepts_jpeg_extension_variants(tmp_path: Pa
 
     assert [result.image_count for result in results] == [4]
     assert len(PdfReader(tmp_path / "pdfs" / "doc.pdf").pages) == 4
+
+
+def test_create_pdfs_from_directory_accepts_png_files(tmp_path: Path) -> None:
+    create_test_png(tmp_path / "letter_1.png")
+    create_test_png(tmp_path / "letter_2.PNG")
+    output_dir = tmp_path / "pdfs"
+
+    results, warnings = create_pdfs_from_directory(tmp_path, output_dir)
+
+    assert [result.image_count for result in results] == [2]
+    assert len(PdfReader(output_dir / "letter.pdf").pages) == 2
+    assert warnings == []
+
+
+def test_create_pdfs_from_directory_mixes_jpeg_and_png(tmp_path: Path) -> None:
+    create_test_jpeg(tmp_path / "scan_1.jpg")
+    create_test_png(tmp_path / "scan_2.png")
+
+    results, _ = create_pdfs_from_directory(tmp_path, tmp_path / "pdfs")
+
+    assert [result.image_count for result in results] == [2]
+
+
+def test_create_pdfs_from_directory_flattens_png_transparency(tmp_path: Path) -> None:
+    create_test_png(tmp_path / "doc_1.png", color=(0, 0, 0, 0))
+
+    results, warnings = create_pdfs_from_directory(tmp_path, tmp_path / "pdfs")
+
+    assert [result.image_count for result in results] == [1]
+    assert warnings == []
 
 
 def test_create_pdfs_from_directory_keeps_numbers_inside_prefix(tmp_path: Path) -> None:

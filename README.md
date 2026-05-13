@@ -20,7 +20,7 @@ contracts.
 Feature extras are split by domain:
 
 - `pdf`: PDF page operations
-- `image`: JPEG-to-PDF conversion
+- `image`: JPEG/PNG-to-PDF conversion
 - `ocr`: OCR and text extraction
 - `all`: every runtime feature
 - `dev`: local testing, linting, formatting, and release tooling
@@ -51,8 +51,8 @@ uv run pliage pdf join combined.pdf first.pdf second.pdf
 uv run pliage pdf split input.pdf --parts 3
 ```
 
-Use `pliage image to-pdf` to combine sequentially numbered JPEG files into
-PDFs grouped by filename prefix:
+Use `pliage image to-pdf` to combine sequentially numbered JPEG or PNG
+files into PDFs grouped by filename prefix:
 
 ```bash
 uv run pliage image to-pdf ./scans --output ./pdfs

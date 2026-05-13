@@ -14,7 +14,7 @@ def register_image_parser(subparsers: argparse._SubParsersAction) -> None:
 
     to_pdf_parser = image_subparsers.add_parser(
         "to-pdf",
-        help="Combine sequentially-numbered JPEG files into PDFs",
+        help="Combine sequentially-numbered JPEG or PNG files into PDFs",
     )
     to_pdf_parser.add_argument(
         "directory",

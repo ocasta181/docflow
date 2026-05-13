@@ -55,8 +55,8 @@ def create_pdfs_from_directory(
 
 
 def parse_filename(filename: str) -> tuple[str, int] | None:
-    """Parse '<prefix>_<number>.jpg' filenames."""
-    match = re.match(r"^(.+)_(\d+)\.jpe?g$", filename, re.IGNORECASE)
+    """Parse '<prefix>_<number>.<ext>' filenames for supported image types."""
+    match = re.match(r"^(.+)_(\d+)\.(?:jpe?g|png)$", filename, re.IGNORECASE)
     if match:
         prefix = match.group(1)
         sequence = int(match.group(2))
@@ -109,6 +109,18 @@ def find_sequence_gaps(files: list[tuple[int, Path]]) -> list[int]:
     expected = set(range(min(sequences), max(sequences) + 1))
     actual = set(sequences)
     return sorted(expected - actual)
+
+
+def flatten_to_rgb(img: Image.Image) -> Image.Image:
+    """Return an RGB image, compositing any alpha channel onto white."""
+    if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
+        rgba = img.convert("RGBA")
+        background = Image.new("RGB", rgba.size, (255, 255, 255))
+        background.paste(rgba, mask=rgba.split()[-1])
+        return background
+    if img.mode in ("RGB", "L"):
+        return img
+    return img.convert("RGB")
 
 
 def apply_exif_orientation(img: Image.Image) -> Image.Image:
@@ -180,9 +192,7 @@ def create_pdf(files: list[tuple[int, Path]], output_path: Path) -> tuple[bool, 
         try:
             img = Image.open(file_path)
             img = apply_exif_orientation(img)
-
-            if img.mode not in ("RGB", "L"):
-                img = img.convert("RGB")
+            img = flatten_to_rgb(img)
 
             with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
                 tmp_path = tmp.name

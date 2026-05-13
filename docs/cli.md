@@ -86,7 +86,7 @@ usage: pliage image [-h] {to-pdf} ...
 
 positional arguments:
   {to-pdf}
-    to-pdf    Combine sequentially-numbered JPEG files into PDFs
+    to-pdf    Combine sequentially-numbered JPEG or PNG files into PDFs
 
 options:
   -h, --help  show this help message and exit
