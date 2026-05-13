@@ -7,11 +7,13 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   github-release:
     name: Build and create GitHub release
     runs-on: ubuntu-latest
+    environment: pypi
 
     steps:
       - name: Check out repository
@@ -57,3 +59,6 @@ jobs:
           gh release create "$GITHUB_REF_NAME" dist/* \
             --title "$GITHUB_REF_NAME" \
             --generate-notes
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
