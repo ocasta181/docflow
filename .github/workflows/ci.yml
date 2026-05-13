@@ -149,3 +149,31 @@ jobs:
           "$tmp/venv/bin/pdftools" reverse "$tmp/reversed.pdf" --output "$tmp/reversed-again.pdf" >/dev/null
           "$tmp/venv/bin/jpg2pdf" "$tmp/scans" --output "$tmp/legacy-pdfs" >/dev/null
           "$tmp/venv/bin/batch-ocr" "$tmp/text.pdf" --dry-run >/dev/null
+
+  ocr-integration:
+    name: OCR integration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8
+
+      - name: Install Tesseract
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng
+          tesseract --version
+
+      - name: Run OCR integration test
+        run: |
+          uv run --extra dev --extra ocr --extra image pytest \
+            tests/test_ocr_domain.py -q \
+            -k test_ocr_pdf_can_write_custom_output_for_scanned_pdf
