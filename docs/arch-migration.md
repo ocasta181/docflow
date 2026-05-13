@@ -108,6 +108,6 @@ Each stage should leave the tools working and tested.
 ## Stage 9: Publishing Polish
 
 - [x] Make top-level optional dependency errors respect `--json`.
-- [ ] Add a single local quality-gate command for pre-push verification.
+- [x] Add a single local quality-gate command for pre-push verification.
 - [ ] Check generated CLI documentation in CI.
 - [ ] Add a short publishing runbook for tags, releases, and package upload.

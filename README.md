@@ -108,5 +108,6 @@ from a clean checkout, not as checked-in source.
 just setup
 just lint
 just test-all
+just check
 just build
 ```
