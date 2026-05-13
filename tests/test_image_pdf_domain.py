@@ -1,19 +1,21 @@
 from pathlib import Path
 
 import pytest
-from PIL import Image
+from PIL import Image, ImageDraw
 from pypdf import PdfReader
 
 from pliage.domains.image_pdf.service import (
     create_pdf,
     create_pdfs_from_directory,
+    page_height_in_pixels,
     parse_filename,
     scan_directory,
+    split_at_whitespace,
 )
 
 
 def create_test_jpeg(path: Path, color: tuple[int, int, int] = (255, 0, 0)) -> None:
-    image = Image.new("RGB", (200, 300), color)
+    image = Image.new("RGB", (200, 250), color)
     image.save(path, "JPEG")
 
 
@@ -21,7 +23,7 @@ def create_test_png(
     path: Path,
     color: tuple[int, int, int, int] = (0, 128, 0, 255),
 ) -> None:
-    image = Image.new("RGBA", (200, 300), color)
+    image = Image.new("RGBA", (200, 250), color)
     image.save(path, "PNG")
 
 
@@ -152,6 +154,39 @@ def test_scan_directory_warns_for_non_matching_files(tmp_path: Path) -> None:
         "Skipping: notes.txt (doesn't match pattern)",
         "Skipping: random.jpg (doesn't match pattern)",
     ]
+
+
+def test_create_pdf_paginates_image_taller_than_page(tmp_path: Path) -> None:
+    image_path = tmp_path / "tall_1.jpg"
+    Image.new("RGB", (200, 800), (255, 255, 255)).save(image_path, "JPEG")
+
+    create_pdf([(1, image_path)], tmp_path / "tall.pdf")
+
+    pages = PdfReader(tmp_path / "tall.pdf").pages
+    page_h_px = page_height_in_pixels(200)
+    expected = -(-800 // page_h_px)
+    assert len(pages) == expected
+    assert expected > 1
+
+
+def test_split_at_whitespace_cuts_at_bright_band() -> None:
+    img = Image.new("L", (100, 600), 0)
+    page_h = page_height_in_pixels(100)
+    search_window = max(1, int(page_h * 0.15))
+    band_start = page_h - search_window + 2
+    band_end = page_h - 2
+    ImageDraw.Draw(img).rectangle([0, band_start, 99, band_end], fill=255)
+
+    slices = list(split_at_whitespace(img, page_h))
+
+    assert slices[0].height == band_end + 1
+
+
+def test_split_at_whitespace_returns_single_slice_when_image_fits() -> None:
+    img = Image.new("L", (100, 50), 255)
+    slices = list(split_at_whitespace(img, page_height_in_pixels(100)))
+    assert len(slices) == 1
+    assert slices[0].height == 50
 
 
 def test_create_pdf_does_not_flatten_unexpected_errors(tmp_path: Path, monkeypatch) -> None:

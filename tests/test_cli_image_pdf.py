@@ -8,7 +8,7 @@ from pliage.cli.app import main
 
 
 def create_test_jpeg(path: Path) -> None:
-    image = Image.new("RGB", (200, 300), (0, 120, 255))
+    image = Image.new("RGB", (200, 250), (0, 120, 255))
     image.save(path, "JPEG")
 
 

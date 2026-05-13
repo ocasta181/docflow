@@ -1,6 +1,7 @@
 """Image-to-PDF conversion service."""
 
 from collections import defaultdict
+from collections.abc import Iterator
 from pathlib import Path
 import os
 import re
@@ -16,6 +17,10 @@ from pliage.shared import ensure_directory
 
 
 PAGE_WIDTH, PAGE_HEIGHT = LETTER
+MARGIN = 0.5 * inch
+CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN
+CONTENT_HEIGHT = PAGE_HEIGHT - 2 * MARGIN
+WHITESPACE_SEARCH_FRACTION = 0.15
 IMAGE_READ_ERRORS = (OSError, UnidentifiedImageError, ValueError)
 EXIF_ORIENTATION_ERRORS = (AttributeError, KeyError, TypeError, ValueError)
 
@@ -159,26 +164,59 @@ def apply_exif_orientation(img: Image.Image) -> Image.Image:
     return img
 
 
-def calculate_image_size(img_width: int, img_height: int) -> tuple[float, float, float, float]:
-    """
-    Calculate the size and position to fit image on US Letter page.
-    Returns (x, y, width, height) in points.
-    """
-    margin = 0.5 * inch
-    max_width = PAGE_WIDTH - 2 * margin
-    max_height = PAGE_HEIGHT - 2 * margin
+def page_height_in_pixels(image_width: int) -> int:
+    """Image-pixel height that maps to one content page at scale-to-width."""
+    return max(1, int(image_width * CONTENT_HEIGHT / CONTENT_WIDTH))
 
-    scale_w = max_width / img_width
-    scale_h = max_height / img_height
-    scale = min(scale_w, scale_h)
 
-    new_width = img_width * scale
-    new_height = img_height * scale
+def split_at_whitespace(img: Image.Image, page_height_px: int) -> Iterator[Image.Image]:
+    """Yield img slices ~page_height_px tall, cutting at the brightest row near each boundary."""
+    if img.height <= page_height_px:
+        yield img
+        return
 
-    x = (PAGE_WIDTH - new_width) / 2
-    y = (PAGE_HEIGHT - new_height) / 2
+    gray = img.convert("L")
+    row_strip = gray.resize((1, img.height), Image.Resampling.BOX)
+    brightness = row_strip.tobytes()
+    search_window = max(1, int(page_height_px * WHITESPACE_SEARCH_FRACTION))
 
-    return x, y, new_width, new_height
+    y = 0
+    while y < img.height:
+        ideal_end = y + page_height_px
+        if ideal_end >= img.height:
+            cut = img.height
+        else:
+            start = max(y + 1, ideal_end - search_window)
+            window = brightness[start:ideal_end]
+            best_offset = 0
+            best_brightness = -1
+            for i, value in enumerate(window):
+                if value >= best_brightness:
+                    best_brightness = value
+                    best_offset = i
+            cut = start + best_offset + 1
+        yield img.crop((0, y, img.width, cut))
+        y = cut
+
+
+def draw_image_paginated(pdf_canvas: canvas.Canvas, img: Image.Image) -> int:
+    """Draw img across one or more pages, splitting on whitespace when too tall."""
+    pts_per_pixel = CONTENT_WIDTH / img.width
+    page_height_px = page_height_in_pixels(img.width)
+    pages = 0
+    for slice_img in split_at_whitespace(img, page_height_px):
+        slice_h_pts = slice_img.height * pts_per_pixel
+        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
+            tmp_path = tmp.name
+            slice_img.save(tmp_path, "JPEG", quality=95)
+        try:
+            top_y = PAGE_HEIGHT - MARGIN - slice_h_pts
+            pdf_canvas.drawImage(tmp_path, MARGIN, top_y, width=CONTENT_WIDTH, height=slice_h_pts)
+            pdf_canvas.showPage()
+            pages += 1
+        finally:
+            os.unlink(tmp_path)
+    return pages
 
 
 def create_pdf(files: list[tuple[int, Path]], output_path: Path) -> tuple[bool, list[str]]:
@@ -193,18 +231,7 @@ def create_pdf(files: list[tuple[int, Path]], output_path: Path) -> tuple[bool, 
             img = Image.open(file_path)
             img = apply_exif_orientation(img)
             img = flatten_to_rgb(img)
-
-            with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
-                tmp_path = tmp.name
-                img.save(tmp_path, "JPEG", quality=95)
-
-            try:
-                x, y, width, height = calculate_image_size(img.width, img.height)
-                pdf_canvas.drawImage(tmp_path, x, y, width=width, height=height)
-                pdf_canvas.showPage()
-                pages_added += 1
-            finally:
-                os.unlink(tmp_path)
+            pages_added += draw_image_paginated(pdf_canvas, img)
         except IMAGE_READ_ERRORS as e:
             warnings.append(f"Warning: Could not process {file_path.name}: {e}")
             continue

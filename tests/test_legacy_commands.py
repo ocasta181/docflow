@@ -26,7 +26,7 @@ def create_text_pdf(path: Path) -> Path:
 
 
 def create_jpeg(path: Path) -> None:
-    image = Image.new("RGB", (200, 300), (255, 0, 0))
+    image = Image.new("RGB", (200, 250), (255, 0, 0))
     image.save(path, "JPEG")
 
 
