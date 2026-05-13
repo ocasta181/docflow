@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from docflow_cli.cli.output import add_json_argument, emit_json
+from pliage.cli.output import add_json_argument, emit_json
 
 
 def register_ocr_parser(subparsers: argparse._SubParsersAction) -> None:

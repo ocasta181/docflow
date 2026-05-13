@@ -1,24 +1,24 @@
-"""Top-level docflow command-line interface."""
+"""Top-level pliage command-line interface."""
 
 import argparse
 from importlib.metadata import PackageNotFoundError, version
 import sys
 
-from docflow_cli.cli.errors import format_optional_dependency_error, get_optional_dependency
-from docflow_cli.cli.output import emit_json
-from docflow_cli.domains.image_pdf.router import register_image_parser
-from docflow_cli.domains.ocr.router import register_ocr_parser
-from docflow_cli.domains.pdf.router import register_pdf_parser
+from pliage.cli.errors import format_optional_dependency_error, get_optional_dependency
+from pliage.cli.output import emit_json
+from pliage.domains.image_pdf.router import register_image_parser
+from pliage.domains.ocr.router import register_ocr_parser
+from pliage.domains.pdf.router import register_pdf_parser
 
 
 def main(argv: list[str] | None = None) -> int:
     cli_args = list(sys.argv[1:] if argv is None else argv)
     if cli_args == ["--version"]:
-        print(f"docflow {_package_version()}")
+        print(f"pliage {_package_version()}")
         return 0
 
     parser = argparse.ArgumentParser(
-        prog="docflow",
+        prog="pliage",
         description="Document workflow utilities",
     )
     parser.add_argument(
@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
 
 def _package_version() -> str:
     try:
-        return version("docflow-cli")
+        return version("pliage")
     except PackageNotFoundError:
         return "0+unknown"
 

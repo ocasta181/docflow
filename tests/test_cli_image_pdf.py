@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 from pypdf import PdfReader
 
-from docflow_cli.cli.app import main
+from pliage.cli.app import main
 
 
 def create_test_jpeg(path: Path) -> None:
@@ -12,7 +12,7 @@ def create_test_jpeg(path: Path) -> None:
     image.save(path, "JPEG")
 
 
-def test_docflow_image_to_pdf_command(tmp_path: Path, capsys) -> None:
+def test_pliage_image_to_pdf_command(tmp_path: Path, capsys) -> None:
     create_test_jpeg(tmp_path / "scan_1.jpg")
     create_test_jpeg(tmp_path / "scan_2.jpg")
     output_dir = tmp_path / "pdfs"
@@ -25,7 +25,7 @@ def test_docflow_image_to_pdf_command(tmp_path: Path, capsys) -> None:
     assert "Successfully created 1 PDF" in captured.out
 
 
-def test_docflow_image_to_pdf_json_output(tmp_path: Path, capsys) -> None:
+def test_pliage_image_to_pdf_json_output(tmp_path: Path, capsys) -> None:
     create_test_jpeg(tmp_path / "scan_1.jpg")
     output_dir = tmp_path / "pdfs"
 
@@ -48,7 +48,7 @@ def test_docflow_image_to_pdf_json_output(tmp_path: Path, capsys) -> None:
     }
 
 
-def test_docflow_image_to_pdf_reports_errors(tmp_path: Path, capsys) -> None:
+def test_pliage_image_to_pdf_reports_errors(tmp_path: Path, capsys) -> None:
     result = main(["image", "to-pdf", str(tmp_path / "missing")])
 
     assert result == 1

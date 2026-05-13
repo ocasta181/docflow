@@ -1,5 +1,5 @@
 [project]
-name = "docflow-cli"
+name = "pliage"
 version = "0.1.1"
 description = "Small command-line utilities for document workflows"
 readme = "README.md"
@@ -28,10 +28,10 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-batch-ocr = "docflow_cli.legacy.batch_ocr:main"
-docflow = "docflow_cli.cli.app:main"
-jpg2pdf = "docflow_cli.legacy.jpg2pdf:main"
-pdftools = "docflow_cli.legacy.pdftools:main"
+batch-ocr = "pliage.legacy.batch_ocr:main"
+jpg2pdf = "pliage.legacy.jpg2pdf:main"
+pdftools = "pliage.legacy.pdftools:main"
+pliage = "pliage.cli.app:main"
 
 [project.optional-dependencies]
 pdf = [
@@ -58,16 +58,16 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ocasta181/docflow"
-Issues = "https://github.com/ocasta181/docflow/issues"
-Repository = "https://github.com/ocasta181/docflow"
+Homepage = "https://github.com/ocasta181/pliage"
+Issues = "https://github.com/ocasta181/pliage/issues"
+Repository = "https://github.com/ocasta181/pliage"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/docflow_cli"]
+packages = ["src/pliage"]
 
 [tool.ruff]
 line-length = 100

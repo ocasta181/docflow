@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from docflow_cli.shared import (
+from pliage.shared import (
     PathValidationError,
     ensure_directory,
     ensure_file,

@@ -4,7 +4,7 @@ import pytest
 from PIL import Image
 from pypdf import PdfReader
 
-from docflow_cli.domains.image_pdf.service import (
+from pliage.domains.image_pdf.service import (
     create_pdf,
     create_pdfs_from_directory,
     parse_filename,
@@ -123,7 +123,7 @@ def test_create_pdf_does_not_flatten_unexpected_errors(tmp_path: Path, monkeypat
     def fail_unexpectedly(*_args, **_kwargs):
         raise AssertionError("unexpected bug")
 
-    monkeypatch.setattr("docflow_cli.domains.image_pdf.service.Image.open", fail_unexpectedly)
+    monkeypatch.setattr("pliage.domains.image_pdf.service.Image.open", fail_unexpectedly)
 
     with pytest.raises(AssertionError, match="unexpected bug"):
         create_pdf([(1, image_path)], tmp_path / "doc.pdf")

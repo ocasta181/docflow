@@ -6,7 +6,7 @@
 
 - Added CI coverage for linting, formatting, tests, builds, and wheel smoke
   tests.
-- Added `docflow --version`.
+- Added `pliage --version`.
 - Added clearer optional dependency errors for installs without feature extras.
 - Added a Tesseract preflight error for OCR work that needs OCR.
 - Added non-destructive OCR output options with `--output` and `--output-dir`.
@@ -17,13 +17,14 @@
 - Added release automation, publishing documentation, and PyPI Trusted
   Publishing wiring.
 - Added dedicated OCR integration coverage in CI.
-- Renamed the Python distribution/import package to `docflow-cli` /
-  `docflow_cli` because `docflow` is already registered on PyPI.
+- Renamed the project, repository target, distribution package, import package,
+  and primary executable to `pliage` because `docflow` is already registered on
+  PyPI.
 - Removed the old duplicated per-tool source trees from `main`.
 
 ## 0.1.0 - 2026-05-12
 
-- Introduced the unified `docflow` command with `pdf`, `image`, and `ocr`
+- Introduced the unified `pliage` command with `pdf`, `image`, and `ocr`
   subcommands.
 - Preserved `pdftools`, `jpg2pdf`, and `batch-ocr` as compatibility aliases.
 - Consolidated packaging into one root `pyproject.toml`, one `uv.lock`, and one

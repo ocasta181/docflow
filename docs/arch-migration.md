@@ -45,14 +45,14 @@ Each stage should leave the tools working and tested.
 
 ## Stage 4: Create Unified CLI
 
-- [x] Add a new root package under `src/docflow_cli`.
-- [x] Add the `docflow` executable.
+- [x] Add a new root package under `src/pliage`.
+- [x] Add the `pliage` executable.
 - [x] Add the `pdf` subcommand group.
 - [x] Add the `image` subcommand group.
 - [x] Add the `ocr` subcommand group.
-- [x] Route `docflow pdf reverse|join|split` to the PDF domain service.
-- [x] Route `docflow image to-pdf` to the image-to-PDF domain service.
-- [x] Route `docflow ocr run|extract` to the OCR domain service.
+- [x] Route `pliage pdf reverse|join|split` to the PDF domain service.
+- [x] Route `pliage image to-pdf` to the image-to-PDF domain service.
+- [x] Route `pliage ocr run|extract` to the OCR domain service.
 - [x] Add top-level help text that makes command choice obvious.
 - [x] Keep legacy commands as wrappers while migration is incomplete.
 
@@ -89,7 +89,7 @@ Each stage should leave the tools working and tested.
 ## Stage 8: Post-Migration Hardening
 
 - [x] Add CI for lint, format checks, tests, build, and wheel smoke tests.
-- [x] Add a `docflow --version` command backed by package metadata.
+- [x] Add a `pliage --version` command backed by package metadata.
 - [x] Add no-extra install tests for missing `pdf`, `image`, and `ocr`
       optional dependencies.
 - [x] Add a clear Tesseract preflight error for OCR work that actually needs

@@ -1,4 +1,4 @@
-from docflow_cli.shared import CommandResult
+from pliage.shared import CommandResult
 
 
 def test_command_result_exit_code_tracks_success() -> None:

@@ -6,8 +6,8 @@ import fitz
 from PIL import Image, ImageDraw
 import pytest
 
-from docflow_cli.domains.ocr.models import ExtractResult, OcrResult
-from docflow_cli.domains.ocr.service import (
+from pliage.domains.ocr.models import ExtractResult, OcrResult
+from pliage.domains.ocr.service import (
     extract_text,
     find_pdfs,
     has_text,
@@ -81,7 +81,7 @@ def test_ocr_pdf_reports_clear_error_when_tesseract_is_missing(
 ) -> None:
     pdf_path = create_image_pdf(tmp_path / "scan.pdf")
     monkeypatch.setattr(
-        "docflow_cli.domains.ocr.service.tesseract_unavailable_message",
+        "pliage.domains.ocr.service.tesseract_unavailable_message",
         lambda: "Tesseract executable not found. Install Tesseract and ensure it is on PATH.",
     )
 
@@ -101,9 +101,7 @@ def test_ocr_pdf_skips_text_pdf_without_tesseract_preflight(
     def fail_preflight() -> str | None:
         raise AssertionError("Tesseract should not be checked for skipped text PDFs")
 
-    monkeypatch.setattr(
-        "docflow_cli.domains.ocr.service.tesseract_unavailable_message", fail_preflight
-    )
+    monkeypatch.setattr("pliage.domains.ocr.service.tesseract_unavailable_message", fail_preflight)
 
     result = ocr_pdf(pdf_path, skip_if_text=True)
 
@@ -150,10 +148,8 @@ def test_ocr_pdf_passes_language_to_tesseract(tmp_path: Path, monkeypatch) -> No
         calls.append(command)
         return subprocess.CompletedProcess(command, 0, "", "")
 
-    monkeypatch.setattr(
-        "docflow_cli.domains.ocr.service.tesseract_unavailable_message", lambda: None
-    )
-    monkeypatch.setattr("docflow_cli.domains.ocr.service.subprocess.run", fake_run)
+    monkeypatch.setattr("pliage.domains.ocr.service.tesseract_unavailable_message", lambda: None)
+    monkeypatch.setattr("pliage.domains.ocr.service.subprocess.run", fake_run)
 
     result = ocr_pdf(
         pdf_path,
@@ -170,11 +166,9 @@ def test_ocr_pdf_passes_language_to_tesseract(tmp_path: Path, monkeypatch) -> No
 def test_ocr_pdf_does_not_flatten_unexpected_errors(tmp_path: Path, monkeypatch) -> None:
     pdf_path = tmp_path / "scan.pdf"
     pdf_path.write_bytes(b"%PDF-1.7\n")
+    monkeypatch.setattr("pliage.domains.ocr.service.tesseract_unavailable_message", lambda: None)
     monkeypatch.setattr(
-        "docflow_cli.domains.ocr.service.tesseract_unavailable_message", lambda: None
-    )
-    monkeypatch.setattr(
-        "docflow_cli.domains.ocr.service.fitz.open",
+        "pliage.domains.ocr.service.fitz.open",
         lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("unexpected bug")),
     )
 
@@ -186,7 +180,7 @@ def test_extract_text_does_not_flatten_unexpected_errors(tmp_path: Path, monkeyp
     pdf_path = tmp_path / "text.pdf"
     pdf_path.write_bytes(b"%PDF-1.7\n")
     monkeypatch.setattr(
-        "docflow_cli.domains.ocr.service.fitz.open",
+        "pliage.domains.ocr.service.fitz.open",
         lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("unexpected bug")),
     )
 

@@ -6,7 +6,7 @@ root_test := "uv run --extra dev --extra pdf --extra image --extra ocr pytest te
 setup:
     uv sync --extra dev --extra pdf --extra image --extra ocr
 
-# Run the root docflow test suite.
+# Run the root pliage test suite.
 test:
     {{root_test}}
 

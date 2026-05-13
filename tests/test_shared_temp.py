@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from docflow_cli.shared import atomic_output_path
+from pliage.shared import atomic_output_path
 
 
 def test_atomic_output_path_replaces_target_on_success(tmp_path: Path) -> None:

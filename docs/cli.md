@@ -1,11 +1,11 @@
 # CLI Reference
 
-Generated from the current `docflow` command help.
+Generated from the current `pliage` command help.
 
-## `docflow`
+## `pliage`
 
 ```text
-usage: docflow [-h] [--version] {image,ocr,pdf} ...
+usage: pliage [-h] [--version] {image,ocr,pdf} ...
 
 Document workflow utilities
 
@@ -20,10 +20,10 @@ options:
   --version        Show the installed version and exit
 ```
 
-## `docflow pdf`
+## `pliage pdf`
 
 ```text
-usage: docflow pdf [-h] {reverse,join,split} ...
+usage: pliage pdf [-h] {reverse,join,split} ...
 
 positional arguments:
   {reverse,join,split}
@@ -35,10 +35,10 @@ options:
   -h, --help            show this help message and exit
 ```
 
-## `docflow pdf reverse`
+## `pliage pdf reverse`
 
 ```text
-usage: docflow pdf reverse [-h] [--output OUTPUT] [--json] input
+usage: pliage pdf reverse [-h] [--output OUTPUT] [--json] input
 
 positional arguments:
   input                 Input PDF file
@@ -50,10 +50,10 @@ options:
   --json                Emit machine-readable JSON output
 ```
 
-## `docflow pdf join`
+## `pliage pdf join`
 
 ```text
-usage: docflow pdf join [-h] [--json] output inputs [inputs ...]
+usage: pliage pdf join [-h] [--json] output inputs [inputs ...]
 
 positional arguments:
   output      Output PDF file
@@ -64,10 +64,10 @@ options:
   --json      Emit machine-readable JSON output
 ```
 
-## `docflow pdf split`
+## `pliage pdf split`
 
 ```text
-usage: docflow pdf split [-h] [--parts PARTS] [--json] input
+usage: pliage pdf split [-h] [--parts PARTS] [--json] input
 
 positional arguments:
   input                 Input PDF file
@@ -79,10 +79,10 @@ options:
   --json                Emit machine-readable JSON output
 ```
 
-## `docflow image`
+## `pliage image`
 
 ```text
-usage: docflow image [-h] {to-pdf} ...
+usage: pliage image [-h] {to-pdf} ...
 
 positional arguments:
   {to-pdf}
@@ -92,11 +92,11 @@ options:
   -h, --help  show this help message and exit
 ```
 
-## `docflow image to-pdf`
+## `pliage image to-pdf`
 
 ```text
-usage: docflow image to-pdf [-h] [--prefix PREFIX] [--output OUTPUT] [--json]
-                            [directory]
+usage: pliage image to-pdf [-h] [--prefix PREFIX] [--output OUTPUT] [--json]
+                           [directory]
 
 positional arguments:
   directory             Directory to scan (default: current directory)
@@ -111,10 +111,10 @@ options:
   --json                Emit machine-readable JSON output
 ```
 
-## `docflow ocr`
+## `pliage ocr`
 
 ```text
-usage: docflow ocr [-h] {run,extract} ...
+usage: pliage ocr [-h] {run,extract} ...
 
 positional arguments:
   {run,extract}
@@ -125,13 +125,13 @@ options:
   -h, --help     show this help message and exit
 ```
 
-## `docflow ocr run`
+## `pliage ocr run`
 
 ```text
-usage: docflow ocr run [-h] [--no-recursive] [--dry-run] [--quiet]
-                       [--lang LANG] [--json] [--force] [--output OUTPUT]
-                       [--output-dir OUTPUT_DIR]
-                       path
+usage: pliage ocr run [-h] [--no-recursive] [--dry-run] [--quiet]
+                      [--lang LANG] [--json] [--force] [--output OUTPUT]
+                      [--output-dir OUTPUT_DIR]
+                      path
 
 positional arguments:
   path                  Directory to process (or single PDF file)
@@ -152,12 +152,12 @@ options:
                         directory
 ```
 
-## `docflow ocr extract`
+## `pliage ocr extract`
 
 ```text
-usage: docflow ocr extract [-h] [--no-recursive] [--dry-run] [--quiet]
-                           [--lang LANG] [--json]
-                           path
+usage: pliage ocr extract [-h] [--no-recursive] [--dry-run] [--quiet]
+                          [--lang LANG] [--json]
+                          path
 
 positional arguments:
   path                Directory to process (or single PDF file)

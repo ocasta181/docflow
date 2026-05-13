@@ -2,10 +2,10 @@ import json
 
 import pytest
 
-from docflow_cli.cli.app import main
-import docflow_cli.domains.image_pdf.router as image_router
-import docflow_cli.domains.ocr.router as ocr_router
-import docflow_cli.domains.pdf.router as pdf_router
+from pliage.cli.app import main
+import pliage.domains.image_pdf.router as image_router
+import pliage.domains.ocr.router as ocr_router
+import pliage.domains.pdf.router as pdf_router
 
 
 @pytest.mark.parametrize(
@@ -57,8 +57,8 @@ def test_missing_optional_dependency_prints_install_hint(
     assert result == 1
     captured = capsys.readouterr()
     assert f"Missing optional dependency: {package_name}" in captured.err
-    assert f"docflow-cli[{extra}]" in captured.err
-    assert "docflow-cli[all]" in captured.err
+    assert f"pliage[{extra}]" in captured.err
+    assert "pliage[all]" in captured.err
 
 
 def test_missing_optional_dependency_respects_json(monkeypatch, capsys) -> None:
@@ -73,7 +73,7 @@ def test_missing_optional_dependency_respects_json(monkeypatch, capsys) -> None:
     captured = capsys.readouterr()
     assert captured.err == ""
     assert json.loads(captured.out) == {
-        "error": "Missing optional dependency: pypdf. Install with `docflow-cli[pdf]` or `docflow-cli[all]`.",
+        "error": "Missing optional dependency: pypdf. Install with `pliage[pdf]` or `pliage[all]`.",
         "missing_dependency": {"extra": "pdf", "package": "pypdf"},
         "success": False,
     }

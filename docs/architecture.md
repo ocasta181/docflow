@@ -1,6 +1,6 @@
 # Architecture
 
-`docflow` should be a small document-workflow toolkit with one user-facing
+`pliage` should be a small document-workflow toolkit with one user-facing
 CLI and separate domain modules underneath it. The CLI should make common
 workflows easy to discover without forcing unrelated capabilities into the same
 implementation module.
@@ -19,24 +19,24 @@ implementation module.
 The project should ship a single primary executable:
 
 ```bash
-docflow <domain> <command> [options]
+pliage <domain> <command> [options]
 ```
 
 The top-level command should route to domain-specific subcommands:
 
 ```bash
-docflow pdf reverse input.pdf
-docflow pdf join output.pdf first.pdf second.pdf
-docflow pdf split input.pdf --parts 3
+pliage pdf reverse input.pdf
+pliage pdf join output.pdf first.pdf second.pdf
+pliage pdf split input.pdf --parts 3
 
-docflow image to-pdf /path/to/scans --prefix tax_return
+pliage image to-pdf /path/to/scans --prefix tax_return
 
-docflow ocr run /path/to/file-or-folder
-docflow ocr extract /path/to/file-or-folder
+pliage ocr run /path/to/file-or-folder
+pliage ocr extract /path/to/file-or-folder
 ```
 
 Legacy executables may exist as thin compatibility wrappers during migration,
-but the durable interface should be the single `docflow` command.
+but the durable interface should be the single `pliage` command.
 Commands should support `--json` where script consumers need stable,
 machine-readable output without scraping human progress text. The JSON shapes
 should be documented as a public scripting contract.
@@ -46,7 +46,7 @@ should be documented as a public scripting contract.
 The code should be organized by domain:
 
 ```text
-src/docflow_cli/
+src/pliage/
   cli/
     app.py
     errors.py

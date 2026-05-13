@@ -3,7 +3,7 @@ from pathlib import Path
 
 import fitz
 
-from docflow_cli.cli.app import main
+from pliage.cli.app import main
 
 
 def create_text_pdf(path: Path) -> Path:
@@ -15,7 +15,7 @@ def create_text_pdf(path: Path) -> Path:
     return path
 
 
-def test_docflow_ocr_run_skips_pdf_with_text(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_run_skips_pdf_with_text(tmp_path: Path, capsys) -> None:
     pdf_path = create_text_pdf(tmp_path / "text.pdf")
 
     result = main(["ocr", "run", str(pdf_path)])
@@ -25,7 +25,7 @@ def test_docflow_ocr_run_skips_pdf_with_text(tmp_path: Path, capsys) -> None:
     assert "Skipped: Already has text" in captured.out
 
 
-def test_docflow_ocr_run_json_skips_pdf_with_text(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_run_json_skips_pdf_with_text(tmp_path: Path, capsys) -> None:
     pdf_path = create_text_pdf(tmp_path / "text.pdf")
 
     result = main(["ocr", "run", str(pdf_path), "--json"])
@@ -46,7 +46,7 @@ def test_docflow_ocr_run_json_skips_pdf_with_text(tmp_path: Path, capsys) -> Non
     }
 
 
-def test_docflow_ocr_extract_writes_text_file(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_extract_writes_text_file(tmp_path: Path, capsys) -> None:
     pdf_path = create_text_pdf(tmp_path / "text.pdf")
 
     result = main(["ocr", "extract", str(pdf_path)])
@@ -57,7 +57,7 @@ def test_docflow_ocr_extract_writes_text_file(tmp_path: Path, capsys) -> None:
     assert "extracted" in captured.out
 
 
-def test_docflow_ocr_run_dry_run_directory(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_run_dry_run_directory(tmp_path: Path, capsys) -> None:
     create_text_pdf(tmp_path / "text.pdf")
 
     result = main(["ocr", "run", str(tmp_path), "--dry-run"])
@@ -67,7 +67,7 @@ def test_docflow_ocr_run_dry_run_directory(tmp_path: Path, capsys) -> None:
     assert "Found 1 PDF" in captured.out
 
 
-def test_docflow_ocr_run_help_lists_language_option(capsys) -> None:
+def test_pliage_ocr_run_help_lists_language_option(capsys) -> None:
     result = main(["ocr", "run", "--help"])
 
     assert result == 0
@@ -75,7 +75,7 @@ def test_docflow_ocr_run_help_lists_language_option(capsys) -> None:
     assert "--lang" in captured.out
 
 
-def test_docflow_ocr_extract_help_lists_language_option(capsys) -> None:
+def test_pliage_ocr_extract_help_lists_language_option(capsys) -> None:
     result = main(["ocr", "extract", "--help"])
 
     assert result == 0
@@ -83,7 +83,7 @@ def test_docflow_ocr_extract_help_lists_language_option(capsys) -> None:
     assert "--lang" in captured.out
 
 
-def test_docflow_ocr_run_dry_run_single_file_shows_output(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_run_dry_run_single_file_shows_output(tmp_path: Path, capsys) -> None:
     pdf_path = create_text_pdf(tmp_path / "text.pdf")
     output_path = tmp_path / "ocr.pdf"
 
@@ -94,7 +94,7 @@ def test_docflow_ocr_run_dry_run_single_file_shows_output(tmp_path: Path, capsys
     assert f"{pdf_path} -> {output_path}" in captured.out
 
 
-def test_docflow_ocr_run_dry_run_directory_shows_output_dir(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_run_dry_run_directory_shows_output_dir(tmp_path: Path, capsys) -> None:
     nested = tmp_path / "nested"
     nested.mkdir()
     create_text_pdf(nested / "text.pdf")
@@ -107,7 +107,7 @@ def test_docflow_ocr_run_dry_run_directory_shows_output_dir(tmp_path: Path, caps
     assert f"nested/text.pdf -> {output_dir / 'nested' / 'text.pdf'}" in captured.out
 
 
-def test_docflow_ocr_run_rejects_output_for_directory(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_run_rejects_output_for_directory(tmp_path: Path, capsys) -> None:
     create_text_pdf(tmp_path / "text.pdf")
 
     result = main(["ocr", "run", str(tmp_path), "--output", str(tmp_path / "ocr.pdf")])
@@ -117,7 +117,7 @@ def test_docflow_ocr_run_rejects_output_for_directory(tmp_path: Path, capsys) ->
     assert "--output can only be used with a single PDF file" in captured.err
 
 
-def test_docflow_ocr_run_rejects_conflicting_output_options(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_run_rejects_conflicting_output_options(tmp_path: Path, capsys) -> None:
     pdf_path = create_text_pdf(tmp_path / "text.pdf")
 
     result = main(
@@ -137,7 +137,7 @@ def test_docflow_ocr_run_rejects_conflicting_output_options(tmp_path: Path, caps
     assert "Use either --output or --output-dir" in captured.err
 
 
-def test_docflow_ocr_reports_missing_path(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_reports_missing_path(tmp_path: Path, capsys) -> None:
     result = main(["ocr", "run", str(tmp_path / "missing")])
 
     assert result == 1
@@ -145,7 +145,7 @@ def test_docflow_ocr_reports_missing_path(tmp_path: Path, capsys) -> None:
     assert "Path not found" in captured.err
 
 
-def test_docflow_ocr_json_reports_missing_path(tmp_path: Path, capsys) -> None:
+def test_pliage_ocr_json_reports_missing_path(tmp_path: Path, capsys) -> None:
     missing_path = tmp_path / "missing"
 
     result = main(["ocr", "run", str(missing_path), "--json"])

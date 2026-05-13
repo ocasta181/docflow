@@ -1,4 +1,4 @@
-"""Shared infrastructure for docflow domains."""
+"""Shared infrastructure for pliage domains."""
 
 from .files import (
     PathValidationError,
