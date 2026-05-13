@@ -32,6 +32,11 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v8
 
+      - name: Check generated docs
+        run: |
+          uv run --extra dev --extra pdf --extra image --extra ocr python tools/generate_cli_docs.py
+          git diff --exit-code docs/cli.md
+
       - name: Lint
         run: uv run --extra dev ruff check src tests tools
 
