@@ -44,6 +44,7 @@ docs-check: docs
 
 # Run the full local pre-push quality gate.
 check: docs-check format-check lint typecheck test-all build
+    just clean
 
 # Clean root-generated artifacts.
 clean:
