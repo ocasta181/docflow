@@ -10,6 +10,8 @@ migration.
 See [docs/publishing.md](docs/publishing.md) for release and publishing steps.
 See [docs/json-output.md](docs/json-output.md) for machine-readable output
 contracts.
+See [docs/why-pliage-exists.md](docs/why-pliage-exists.md) for the project
+rationale and comparable public tools.
 
 ## Requirements
 
