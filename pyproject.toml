@@ -28,9 +28,6 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-batch-ocr = "pliage.legacy.batch_ocr:main"
-jpg2pdf = "pliage.legacy.jpg2pdf:main"
-pdftools = "pliage.legacy.pdftools:main"
 pliage = "pliage.cli.app:main"
 
 [project.optional-dependencies]

@@ -98,8 +98,6 @@ folder and easier to automate than a GUI.
 
 The near-term direction is hardening, not expansion for its own sake:
 
-- Keep compatibility aliases documented while new scripts standardize on the
-  durable `pliage` interface.
 - Continue tightening JSON output as a public scripting contract.
 - Add only the PDF page operations that match common local workflows, such as
   extracting selected pages, deleting pages, or rotating pages, if they can be

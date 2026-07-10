@@ -149,9 +149,7 @@ jobs:
           "$tmp/venv/bin/pliage" pdf reverse "$tmp/sample.pdf" --output "$tmp/reversed.pdf" >/dev/null
           "$tmp/venv/bin/pliage" image to-pdf "$tmp/scans" --output "$tmp/pdfs" >/dev/null
           "$tmp/venv/bin/pliage" ocr run "$tmp/text.pdf" >/dev/null
-          "$tmp/venv/bin/pdftools" reverse "$tmp/reversed.pdf" --output "$tmp/reversed-again.pdf" >/dev/null
-          "$tmp/venv/bin/jpg2pdf" "$tmp/scans" --output "$tmp/legacy-pdfs" >/dev/null
-          "$tmp/venv/bin/batch-ocr" "$tmp/text.pdf" --dry-run >/dev/null
+          "$tmp/venv/bin/pliage" ocr extract "$tmp/text.pdf" >/dev/null
 
   ocr-integration:
     name: OCR integration

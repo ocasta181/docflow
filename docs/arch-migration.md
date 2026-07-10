@@ -14,10 +14,10 @@ Each stage should leave the tools working and tested.
 
 ## Stage 1: Stabilize Existing Tools
 
-- [x] Add missing `jpg2pdf` test dependencies.
-- [x] Replace `jpg2pdf`'s hardcoded `.venv/bin/python` test runner with the
-      active Python interpreter or normal `pytest` entry points.
-- [x] Add a `jpg2pdf` test command to its `justfile`.
+- [x] Add missing image-to-PDF test dependencies.
+- [x] Replace hardcoded `.venv/bin/python` test runners with the active Python
+      interpreter or normal `pytest` entry points.
+- [x] Add an image-to-PDF test command to the root `justfile`.
 - [x] Add output-path conflict checks to PDF join operations.
 - [x] Replace unsafe temporary-name creation in OCR code with managed temporary
       files or directories.
@@ -26,12 +26,12 @@ Each stage should leave the tools working and tested.
 
 ## Stage 2: Normalize Package Shape
 
-- [x] Convert `jpg2pdf` from a single script into a package.
-- [x] Split `jpg2pdf` into `core.py` or `service.py` plus `cli.py`.
+- [x] Convert the image-to-PDF tool from a single script into a package.
+- [x] Split image-to-PDF code into `service.py` plus CLI routing.
 - [x] Make all command entry points return integer exit codes instead of calling
       `sys.exit()` inside testable functions.
-- [x] Keep existing `pdftools`, `jpg2pdf`, and `batch-ocr` commands working.
-- [x] Add CLI tests for the normalized `jpg2pdf` command.
+- [x] Keep existing tools working through the migration period.
+- [x] Add CLI tests for the normalized image-to-PDF command.
 
 ## Stage 3: Introduce Shared Infrastructure
 
@@ -54,7 +54,7 @@ Each stage should leave the tools working and tested.
 - [x] Route `pliage image to-pdf` to the image-to-PDF domain service.
 - [x] Route `pliage ocr run|extract` to the OCR domain service.
 - [x] Add top-level help text that makes command choice obvious.
-- [x] Keep legacy commands as wrappers while migration is incomplete.
+- [x] Ship only the unified `pliage` command as the public interface.
 
 ## Stage 5: Consolidate Tooling
 
@@ -80,8 +80,8 @@ Each stage should leave the tools working and tested.
 
 ## Stage 7: Remove Migration Shims
 
-- [x] Decide whether legacy executables remain supported aliases.
-- [x] Remove compatibility wrappers that are not part of the public interface.
+- [x] Drop temporary compatibility entry points; public interface is `pliage` only.
+- [x] Remove wrappers that are not part of the public interface.
 - [x] Delete obsolete per-tool build files.
 - [x] Delete obsolete specs after their behavior is covered by tests and docs.
 - [x] Update migration docs with completed decisions.

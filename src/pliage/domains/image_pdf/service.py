@@ -236,7 +236,7 @@ def convert_to_grayscale(
       reference grid whose squares are *grid_size_cm* centimeters across
       (see :func:`detect_grid_pitch`).  Images whose grid can't be detected
       are left unchanged and a warning is recorded.
-    * Otherwise the legacy 8.5x11 page assumption is used.
+    * Otherwise the default 8.5x11 page assumption is used.
 
     Returns a list of output paths and a list of warning strings.
     """

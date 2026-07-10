@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Removed temporary compatibility entry points and the `pliage.legacy` package.
+  The only public executable is `pliage`.
+
 ## 0.1.1 - 2026-05-12
 
 - Added CI coverage for linting, formatting, tests, builds, and wheel smoke
@@ -26,7 +29,6 @@
 
 - Introduced the unified `pliage` command with `pdf`, `image`, and `ocr`
   subcommands.
-- Preserved `pdftools`, `jpg2pdf`, and `batch-ocr` as compatibility aliases.
 - Consolidated packaging into one root `pyproject.toml`, one `uv.lock`, and one
   root `justfile`.
 - Added MIT license metadata.

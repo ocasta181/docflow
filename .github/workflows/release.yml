@@ -48,9 +48,9 @@ jobs:
           uv pip install --python "$tmp/venv/bin/python" "$wheel[all]"
           "$tmp/venv/bin/pliage" --version
           "$tmp/venv/bin/pliage" --help >/dev/null
-          "$tmp/venv/bin/pdftools" --help >/dev/null
-          "$tmp/venv/bin/jpg2pdf" --help >/dev/null
-          "$tmp/venv/bin/batch-ocr" --help >/dev/null
+          "$tmp/venv/bin/pliage" pdf --help >/dev/null
+          "$tmp/venv/bin/pliage" image --help >/dev/null
+          "$tmp/venv/bin/pliage" ocr --help >/dev/null
 
       - name: Create GitHub release
         env:

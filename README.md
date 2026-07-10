@@ -2,10 +2,7 @@
 
 Small command-line utilities for document workflows.
 
-`pliage` is the distribution package name. `pliage` is the primary
-executable. The legacy command names `pdftools`, `jpg2pdf`, and `batch-ocr`
-are still available as compatibility aliases while the project finishes
-migration.
+`pliage` is both the distribution package name and the primary executable.
 
 See [docs/publishing.md](docs/publishing.md) for release and publishing steps.
 See [docs/json-output.md](docs/json-output.md) for machine-readable output
@@ -79,18 +76,6 @@ instead of human progress text:
 uv run pliage pdf reverse input.pdf --json
 uv run pliage ocr run ./pdfs --output-dir ./ocr-pdfs --json
 ```
-
-## Legacy Aliases
-
-The original executable names route to the unified command:
-
-```bash
-uv run pdftools reverse input.pdf
-uv run jpg2pdf ./scans --output ./pdfs
-uv run batch-ocr ./pdfs --extract
-```
-
-New scripts should prefer `pliage`.
 
 ## OCR Runtime
 
