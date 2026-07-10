@@ -32,7 +32,10 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v8.3.2
 
+      # argparse help layout differs across Python versions (notably 3.13+),
+      # so only one matrix cell owns the generated-docs golden check.
       - name: Check generated docs
+        if: matrix.python-version == '3.13'
         run: |
           uv run --extra dev --extra pdf --extra image --extra ocr python tools/generate_cli_docs.py
           git diff --exit-code docs/cli.md
