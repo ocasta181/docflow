@@ -15,6 +15,7 @@ COMMANDS = [
     ("pliage pdf split", ["pdf", "split"]),
     ("pliage image", ["image"]),
     ("pliage image to-pdf", ["image", "to-pdf"]),
+    ("pliage image to-bw", ["image", "to-bw"]),
     ("pliage ocr", ["ocr"]),
     ("pliage ocr run", ["ocr", "run"]),
     ("pliage ocr extract", ["ocr", "extract"]),

@@ -41,13 +41,12 @@ options:
 usage: pliage pdf reverse [-h] [--output OUTPUT] [--json] input
 
 positional arguments:
-  input                 Input PDF file
+  input                Input PDF file
 
 options:
-  -h, --help            show this help message and exit
-  --output OUTPUT, -o OUTPUT
-                        Output PDF file (default: INPUTNAME_reversed.pdf)
-  --json                Emit machine-readable JSON output
+  -h, --help           show this help message and exit
+  --output, -o OUTPUT  Output PDF file (default: INPUTNAME_reversed.pdf)
+  --json               Emit machine-readable JSON output
 ```
 
 ## `pliage pdf join`
@@ -70,13 +69,12 @@ options:
 usage: pliage pdf split [-h] [--parts PARTS] [--json] input
 
 positional arguments:
-  input                 Input PDF file
+  input              Input PDF file
 
 options:
-  -h, --help            show this help message and exit
-  --parts PARTS, -n PARTS
-                        Number of parts to split into (default: 2)
-  --json                Emit machine-readable JSON output
+  -h, --help         show this help message and exit
+  --parts, -n PARTS  Number of parts to split into (default: 2)
+  --json             Emit machine-readable JSON output
 ```
 
 ## `pliage image`
@@ -100,16 +98,36 @@ usage: pliage image to-pdf [-h] [--prefix PREFIX] [--output OUTPUT] [--json]
                            [directory]
 
 positional arguments:
-  directory             Directory to scan (default: current directory)
+  directory            Directory to scan (default: current directory)
 
 options:
-  -h, --help            show this help message and exit
-  --prefix PREFIX, -p PREFIX
-                        Only process files matching this prefix (case-
-                        insensitive)
-  --output OUTPUT, -o OUTPUT
-                        Output directory (default: ./pdfs/)
-  --json                Emit machine-readable JSON output
+  -h, --help           show this help message and exit
+  --prefix, -p PREFIX  Only process files matching this prefix (case-
+                       insensitive)
+  --output, -o OUTPUT  Output directory (default: ./pdfs/)
+  --json               Emit machine-readable JSON output
+```
+
+## `pliage image to-bw`
+
+```text
+usage: pliage image to-bw [-h] [--output OUTPUT] [--dpi DPI] [--detect-size]
+                          [--grid [SIZE]] [--json]
+                          [directory]
+
+positional arguments:
+  directory            Directory containing images (default: current
+                       directory)
+
+options:
+  -h, --help           show this help message and exit
+  --output, -o OUTPUT  Output directory (default: overwrite in place as PNG)
+  --dpi DPI            Target output resolution in DPI/PPI (e.g. 150)
+  --detect-size        Measure true resolution from a reference grid instead
+                       of assuming page size
+  --grid [SIZE]        Grid-square size for --detect-size (e.g. 1cm, 5mm,
+                       0.5in; default 1cm)
+  --json               Emit machine-readable JSON output
 ```
 
 ## `pliage ocr`
@@ -146,8 +164,7 @@ options:
                         (default: eng)
   --json                Emit machine-readable JSON output
   --force, -f           Run OCR even on files that already have text
-  --output OUTPUT, -o OUTPUT
-                        Output PDF file for a single input PDF
+  --output, -o OUTPUT   Output PDF file for a single input PDF
   --output-dir OUTPUT_DIR
                         Output directory for OCR PDFs when processing a
                         directory
