@@ -82,14 +82,15 @@ options:
 ## `pliage image`
 
 ```text
-usage: pliage image [-h] {to-pdf} ...
+usage: pliage image [-h] {to-pdf,to-bw} ...
 
 positional arguments:
-  {to-pdf}
-    to-pdf    Combine sequentially-numbered JPEG or PNG files into PDFs
+  {to-pdf,to-bw}
+    to-pdf        Combine sequentially-numbered JPEG or PNG files into PDFs
+    to-bw         Convert images to black-and-white (grayscale) PNGs
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help      show this help message and exit
 ```
 
 ## `pliage image to-pdf`
