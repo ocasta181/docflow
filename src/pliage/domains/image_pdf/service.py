@@ -219,6 +219,80 @@ def draw_image_paginated(pdf_canvas: canvas.Canvas, img: Image.Image) -> int:
     return pages
 
 
+
+def convert_to_grayscale(
+    directory: Path | str,
+    output_dir: Path | str | None = None,
+    dpi: int | None = None,
+) -> tuple[list[Path], list[str]]:
+    """Convert all supported images in *directory* to grayscale PNGs.
+
+    If *output_dir* is ``None`` the files are overwritten in-place (as PNG).
+
+    If *dpi* is given, images are resampled assuming they represent a full
+    letter page (8.5 x 11 inches); see :func:`_resample_to_dpi`.
+
+    Returns a list of output paths and a list of warning strings.
+    """
+    input_dir = ensure_directory(directory)
+    out_dir = Path(output_dir) if output_dir is not None else input_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    supported = re.compile(r"\.(?:jpe?g|png|heic|heif|tiff?|webp|bmp)$", re.IGNORECASE)
+    converted: list[Path] = []
+    warnings: list[str] = []
+
+    for entry in sorted(input_dir.iterdir()):
+        if not entry.is_file() or not supported.search(entry.name):
+            continue
+        try:
+            img = Image.open(entry)
+            img = apply_exif_orientation(img)
+            gray = img.convert("L")
+
+            save_dpi = dpi if dpi is not None else 72
+            if dpi is not None:
+                gray = _resample_to_dpi(gray, dpi)
+
+            dest = out_dir / f"{entry.stem}.png"
+            gray.save(dest, "PNG", dpi=(save_dpi, save_dpi))
+            converted.append(dest)
+        except IMAGE_READ_ERRORS as e:
+            warnings.append(f"Warning: Could not process {entry.name}: {e}")
+
+    if not converted:
+        raise ValueError("No images were converted")
+
+    return converted, warnings
+
+
+PRINT_WIDTH_INCHES = 8.5
+PRINT_HEIGHT_INCHES = 11.0
+
+
+def _resample_to_dpi(img: Image.Image, target_dpi: int) -> Image.Image:
+    """Resize *img* to fit a standard page at *target_dpi*.
+
+    Assumes the image represents a full page (8.5 x 11 inches) and scales
+    so the longer side matches the corresponding page dimension at the
+    target DPI.  This avoids relying on embedded DPI metadata.
+    """
+    if img.height >= img.width:
+        # Portrait: longer side is 11 inches
+        target_h = round(PRINT_HEIGHT_INCHES * target_dpi)
+        scale = target_h / img.height
+    else:
+        # Landscape: longer side is 11 inches
+        target_w = round(PRINT_HEIGHT_INCHES * target_dpi)
+        scale = target_w / img.width
+
+    if scale >= 1.0:
+        return img
+
+    new_size = (max(1, round(img.width * scale)), max(1, round(img.height * scale)))
+    return img.resize(new_size, Image.Resampling.LANCZOS)
+
+
 def create_pdf(files: list[tuple[int, Path]], output_path: Path) -> tuple[bool, list[str]]:
     """Create one PDF from a list of numbered image files."""
     sorted_files = sorted(files, key=lambda item: item[0])
