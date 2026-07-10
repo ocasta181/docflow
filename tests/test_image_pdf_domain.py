@@ -241,9 +241,7 @@ def test_detect_grid_pitch_returns_none_without_grid(tmp_path: Path) -> None:
 def test_convert_to_grayscale_detect_size_downscales(tmp_path: Path) -> None:
     # 40 px per 1 cm square => ~102 PPI; target 51 PPI should halve the image.
     create_grid_image(tmp_path / "note_1.png", pitch=40, size=(800, 600))
-    converted, _ = convert_to_grayscale(
-        tmp_path, dpi=51, detect_size=True, grid_size_cm=1.0
-    )
+    converted, _ = convert_to_grayscale(tmp_path, dpi=51, detect_size=True, grid_size_cm=1.0)
     assert len(converted) == 1
     with Image.open(converted[0]) as out:
         assert out.width == pytest.approx(400, abs=15)
@@ -252,9 +250,7 @@ def test_convert_to_grayscale_detect_size_downscales(tmp_path: Path) -> None:
 
 def test_convert_to_grayscale_detect_size_skips_undetected(tmp_path: Path) -> None:
     Image.new("L", (800, 600), 245).save(tmp_path / "blank_1.png", "PNG")
-    converted, warnings = convert_to_grayscale(
-        tmp_path, dpi=51, detect_size=True, grid_size_cm=1.0
-    )
+    converted, warnings = convert_to_grayscale(tmp_path, dpi=51, detect_size=True, grid_size_cm=1.0)
     assert len(converted) == 1
     with Image.open(converted[0]) as out:
         assert out.size == (800, 600)  # left unchanged

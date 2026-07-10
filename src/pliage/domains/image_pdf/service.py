@@ -258,9 +258,7 @@ def convert_to_grayscale(
 
             save_dpi = dpi if dpi is not None else 72
             if dpi is not None and detect_size:
-                gray, applied, note = _resample_by_grid(
-                    gray, dpi, grid_size_cm or 1.0, entry.name
-                )
+                gray, applied, note = _resample_by_grid(gray, dpi, grid_size_cm or 1.0, entry.name)
                 if note:
                     warnings.append(note)
                 if applied is None:
