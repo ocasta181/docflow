@@ -219,18 +219,24 @@ def draw_image_paginated(pdf_canvas: canvas.Canvas, img: Image.Image) -> int:
     return pages
 
 
-
 def convert_to_grayscale(
     directory: Path | str,
     output_dir: Path | str | None = None,
     dpi: int | None = None,
+    detect_size: bool = False,
+    grid_size_cm: float | None = None,
 ) -> tuple[list[Path], list[str]]:
     """Convert all supported images in *directory* to grayscale PNGs.
 
     If *output_dir* is ``None`` the files are overwritten in-place (as PNG).
 
-    If *dpi* is given, images are resampled assuming they represent a full
-    letter page (8.5 x 11 inches); see :func:`_resample_to_dpi`.
+    If *dpi* is given, images are resampled to that target resolution:
+
+    * When *detect_size* is true, the true resolution is measured from a
+      reference grid whose squares are *grid_size_cm* centimeters across
+      (see :func:`detect_grid_pitch`).  Images whose grid can't be detected
+      are left unchanged and a warning is recorded.
+    * Otherwise the legacy 8.5x11 page assumption is used.
 
     Returns a list of output paths and a list of warning strings.
     """
@@ -251,7 +257,15 @@ def convert_to_grayscale(
             gray = img.convert("L")
 
             save_dpi = dpi if dpi is not None else 72
-            if dpi is not None:
+            if dpi is not None and detect_size:
+                gray, applied, note = _resample_by_grid(
+                    gray, dpi, grid_size_cm or 1.0, entry.name
+                )
+                if note:
+                    warnings.append(note)
+                if applied is None:
+                    save_dpi = 72
+            elif dpi is not None:
                 gray = _resample_to_dpi(gray, dpi)
 
             dest = out_dir / f"{entry.stem}.png"
@@ -264,6 +278,157 @@ def convert_to_grayscale(
         raise ValueError("No images were converted")
 
     return converted, warnings
+
+
+CM_PER_INCH = 2.54
+
+# Grid-pitch search bounds (pixels per square) in the projection sample space.
+_GRID_PITCH_LO = 25
+_GRID_PITCH_HI = 260
+# Cap projection length so the pure-Python autocorrelation stays fast; the
+# measured pitch is scaled back to full resolution afterwards.
+_MAX_PROJECTION = 1500
+# Squares are square: the two axes' pitches must agree within this fraction.
+_AXIS_AGREEMENT_TOL = 0.08
+
+_GRID_SIZE_RE = re.compile(r"^\s*([0-9]*\.?[0-9]+)\s*(cm|mm|in|inch|\")\s*$", re.IGNORECASE)
+
+
+def parse_grid_size_cm(spec: str) -> float:
+    """Parse a physical grid-square size like '1cm', '5mm', '0.5in' into centimeters."""
+    match = _GRID_SIZE_RE.match(spec)
+    if not match:
+        raise ValueError(f"Invalid grid size {spec!r}; use e.g. '1cm', '5mm', '0.5in'")
+    value = float(match.group(1))
+    unit = match.group(2).lower()
+    if unit == "mm":
+        return value / 10.0
+    if unit in ("in", "inch", '"'):
+        return value * CM_PER_INCH
+    return value
+
+
+def _darkness_projection(gray: Image.Image, axis: int) -> tuple[list[float], int]:
+    """Return a 1-D darkness profile along *axis* and the full-res length it spans.
+
+    axis 0 collapses width to find horizontal lines (profile down the height);
+    axis 1 collapses height to find vertical lines (profile across the width).
+    PIL box-resize does the averaging, avoiding a numpy dependency.
+    """
+    if axis == 0:
+        length = gray.height
+        size = (1, min(length, _MAX_PROJECTION))
+    else:
+        length = gray.width
+        size = (min(length, _MAX_PROJECTION), 1)
+    strip = gray.resize(size, Image.Resampling.BOX)
+    return [255.0 - value for value in strip.tobytes()], length
+
+
+def _autocorr_pitch(values: list[float], max_lag: int) -> tuple[float, float] | None:
+    """Return (pitch, peak strength) via an autocorrelation peak-comb, or None.
+
+    The fundamental is the strongest autocorrelation peak in the plausible band;
+    higher harmonics are divided down to their order and combined, which avoids
+    locking onto a half-pitch.
+    """
+    n = len(values)
+    if n < _GRID_PITCH_LO * 2:
+        return None
+    mean = sum(values) / n
+    x = [v - mean for v in values]
+    energy = sum(v * v for v in x)
+    if energy <= 0:
+        return None
+
+    max_lag = min(max_lag, n - 1)
+    ac = [0.0] * (max_lag + 1)
+    for lag in range(1, max_lag + 1):
+        total = 0.0
+        for i in range(n - lag):
+            total += x[i] * x[i + lag]
+        ac[lag] = total / energy
+
+    peaks = [
+        i
+        for i in range(max(_GRID_PITCH_LO, 1), max_lag)
+        if ac[i] > ac[i - 1] and ac[i] >= ac[i + 1] and ac[i] > 0.05
+    ]
+    candidates = [p for p in peaks if _GRID_PITCH_LO <= p <= _GRID_PITCH_HI]
+    if not candidates:
+        return None
+    fundamental = max(candidates, key=lambda p: ac[p])
+
+    estimates = []
+    for p in peaks:
+        order = round(p / fundamental)
+        if order >= 1 and abs(p - order * fundamental) < 0.15 * fundamental:
+            estimates.append(p / order)
+    estimates.sort()
+    pitch = estimates[len(estimates) // 2] if estimates else float(fundamental)
+    return pitch, ac[fundamental]
+
+
+def detect_grid_pitch(gray: Image.Image) -> float | None:
+    """Detect graph-paper grid pitch in pixels per square, or None if undetected.
+
+    Measures the period independently along both axes and cross-checks them
+    (the squares are square): returns the average when they agree within
+    :data:`_AXIS_AGREEMENT_TOL`, the stronger axis when they don't, and None
+    when no reliable grid is found on either axis.
+    """
+    results: list[tuple[float, float]] = []
+    for axis in (0, 1):
+        values, length = _darkness_projection(gray, axis)
+        scale = length / len(values)
+        hit = _autocorr_pitch(values, max_lag=4 * _GRID_PITCH_HI)
+        if hit is not None:
+            pitch, strength = hit
+            results.append((pitch * scale, strength))
+
+    if not results:
+        return None
+    if len(results) == 1:
+        return results[0][0]
+
+    (p0, s0), (p1, s1) = results
+    if abs(p0 - p1) / max(p0, p1) <= _AXIS_AGREEMENT_TOL:
+        return (p0 + p1) / 2
+    return p0 if s0 >= s1 else p1
+
+
+def _resample_by_grid(
+    gray: Image.Image,
+    target_dpi: int,
+    grid_size_cm: float,
+    name: str,
+) -> tuple[Image.Image, int | None, str | None]:
+    """Downscale *gray* to *target_dpi* using a detected reference grid.
+
+    Returns (image, applied_dpi, note).  When the grid can't be detected the
+    image is returned unchanged with ``applied_dpi=None`` and a warning note.
+    """
+    pitch = detect_grid_pitch(gray)
+    if pitch is None:
+        return gray, None, f"Warning: no grid detected in {name}; left unchanged"
+
+    true_ppi = (pitch / grid_size_cm) * CM_PER_INCH
+    scale = target_dpi / true_ppi
+    if scale >= 1.0:
+        note = (
+            f"{name}: detected {true_ppi:.0f} PPI (grid {pitch:.1f} px/square), "
+            f"already at or below {target_dpi} PPI; not upscaled"
+        )
+        return gray, target_dpi, note
+
+    old = gray.size
+    new_size = (max(1, round(gray.width * scale)), max(1, round(gray.height * scale)))
+    resized = gray.resize(new_size, Image.Resampling.LANCZOS)
+    note = (
+        f"{name}: detected {true_ppi:.0f} PPI (grid {pitch:.1f} px/square) -> "
+        f"{target_dpi} PPI, {old[0]}x{old[1]} -> {new_size[0]}x{new_size[1]}"
+    )
+    return resized, target_dpi, note
 
 
 PRINT_WIDTH_INCHES = 8.5
