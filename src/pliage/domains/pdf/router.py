@@ -4,8 +4,8 @@ import argparse
 import sys
 from pathlib import Path
 
-from docflow_cli.cli.output import add_json_argument, emit_json
-from docflow_cli.shared import PathValidationError
+from pliage.cli.output import add_json_argument, emit_json
+from pliage.shared import PathValidationError
 
 
 def register_pdf_parser(subparsers: argparse._SubParsersAction) -> None:

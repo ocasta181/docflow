@@ -20,7 +20,7 @@ Missing optional dependencies include an additional `missing_dependency` object:
 
 ```json
 {
-  "error": "Missing optional dependency: pypdf. Install with `docflow-cli[pdf]` or `docflow-cli[all]`.",
+  "error": "Missing optional dependency: pypdf. Install with `pliage[pdf]` or `pliage[all]`.",
   "missing_dependency": {
     "extra": "pdf",
     "package": "pypdf"
@@ -31,7 +31,7 @@ Missing optional dependencies include an additional `missing_dependency` object:
 
 ## PDF Commands
 
-`docflow pdf reverse INPUT --json`
+`pliage pdf reverse INPUT --json`
 
 ```json
 {
@@ -43,7 +43,7 @@ Missing optional dependencies include an additional `missing_dependency` object:
 }
 ```
 
-`docflow pdf join OUTPUT INPUT... --json`
+`pliage pdf join OUTPUT INPUT... --json`
 
 ```json
 {
@@ -60,7 +60,7 @@ Missing optional dependencies include an additional `missing_dependency` object:
 }
 ```
 
-`docflow pdf split INPUT --json`
+`pliage pdf split INPUT --json`
 
 ```json
 {
@@ -80,7 +80,7 @@ Missing optional dependencies include an additional `missing_dependency` object:
 
 ## Image Commands
 
-`docflow image to-pdf DIRECTORY --json`
+`pliage image to-pdf DIRECTORY --json`
 
 ```json
 {
@@ -101,7 +101,7 @@ Warnings are non-fatal and do not change `success` by themselves.
 
 ## OCR Commands
 
-`docflow ocr run PATH --json`
+`pliage ocr run PATH --json`
 
 Single-file output:
 
@@ -142,7 +142,7 @@ Directory output:
 }
 ```
 
-`docflow ocr extract PATH --json`
+`pliage ocr extract PATH --json`
 
 Single-file output:
 

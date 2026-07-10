@@ -4,7 +4,7 @@ import fitz
 from PIL import Image
 from pypdf import PdfReader, PdfWriter
 
-from docflow_cli.legacy import batch_ocr, jpg2pdf, pdftools
+from pliage.legacy import batch_ocr, jpg2pdf, pdftools
 
 
 def create_pdf(path: Path, page_count: int = 1) -> Path:
@@ -26,7 +26,7 @@ def create_text_pdf(path: Path) -> Path:
 
 
 def create_jpeg(path: Path) -> None:
-    image = Image.new("RGB", (200, 300), (255, 0, 0))
+    image = Image.new("RGB", (200, 250), (255, 0, 0))
     image.save(path, "JPEG")
 
 

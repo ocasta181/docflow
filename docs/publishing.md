@@ -44,8 +44,8 @@ secret.
 
 Expected PyPI publisher configuration:
 
-- PyPI project: `docflow-cli`
-- Owner/repository: `ocasta181/docflow`
+- PyPI project: `pliage`
+- Owner/repository: `ocasta181/pliage`
 - Workflow: `.github/workflows/release.yml`
 - Environment: `pypi`
 
@@ -80,5 +80,5 @@ Before pushing a release tag, verify:
 - `pyproject.toml` has the intended release version.
 - `docs/cli.md` is up to date.
 - The release tag matches the package version.
-- PyPI Trusted Publishing is configured for `docflow-cli`.
+- PyPI Trusted Publishing is configured for `pliage`.
 - No local files outside source control are needed to build the package.

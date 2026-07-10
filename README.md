@@ -1,8 +1,8 @@
-# docflow
+# pliage
 
 Small command-line utilities for document workflows.
 
-`docflow-cli` is the distribution package name. `docflow` is the primary
+`pliage` is the distribution package name. `pliage` is the primary
 executable. The legacy command names `pdftools`, `jpg2pdf`, and `batch-ocr`
 are still available as compatibility aliases while the project finishes
 migration.
@@ -10,6 +10,8 @@ migration.
 See [docs/publishing.md](docs/publishing.md) for release and publishing steps.
 See [docs/json-output.md](docs/json-output.md) for machine-readable output
 contracts.
+See [docs/why-pliage-exists.md](docs/why-pliage-exists.md) for the project
+rationale and comparable public tools.
 
 ## Requirements
 
@@ -20,7 +22,7 @@ contracts.
 Feature extras are split by domain:
 
 - `pdf`: PDF page operations
-- `image`: JPEG-to-PDF conversion
+- `image`: JPEG/PNG-to-PDF conversion
 - `ocr`: OCR and text extraction
 - `all`: every runtime feature
 - `dev`: local testing, linting, formatting, and release tooling
@@ -31,51 +33,51 @@ From a source checkout:
 
 ```bash
 uv sync --extra all --extra dev
-uv run docflow --help
+uv run pliage --help
 ```
 
 After package publication:
 
 ```bash
-uv tool install "docflow-cli[all]"
-docflow --help
+uv tool install "pliage[all]"
+pliage --help
 ```
 
 ## Commands
 
-Use `docflow pdf` for PDF page operations:
+Use `pliage pdf` for PDF page operations:
 
 ```bash
-uv run docflow pdf reverse input.pdf
-uv run docflow pdf join combined.pdf first.pdf second.pdf
-uv run docflow pdf split input.pdf --parts 3
+uv run pliage pdf reverse input.pdf
+uv run pliage pdf join combined.pdf first.pdf second.pdf
+uv run pliage pdf split input.pdf --parts 3
 ```
 
-Use `docflow image to-pdf` to combine sequentially numbered JPEG files into
-PDFs grouped by filename prefix:
+Use `pliage image to-pdf` to combine sequentially numbered JPEG or PNG
+files into PDFs grouped by filename prefix:
 
 ```bash
-uv run docflow image to-pdf ./scans --output ./pdfs
-uv run docflow image to-pdf ./scans --prefix invoice
+uv run pliage image to-pdf ./scans --output ./pdfs
+uv run pliage image to-pdf ./scans --prefix invoice
 ```
 
-Use `docflow ocr` for OCR and text extraction:
+Use `pliage ocr` for OCR and text extraction:
 
 ```bash
-uv run docflow ocr run ./pdfs
-uv run docflow ocr run ./pdfs --output-dir ./ocr-pdfs
-uv run docflow ocr run ./document.pdf --output ./document_ocr.pdf
-uv run docflow ocr run ./document.pdf --lang eng+spa
-uv run docflow ocr extract ./pdfs
-uv run docflow ocr run ./document.pdf --force
+uv run pliage ocr run ./pdfs
+uv run pliage ocr run ./pdfs --output-dir ./ocr-pdfs
+uv run pliage ocr run ./document.pdf --output ./document_ocr.pdf
+uv run pliage ocr run ./document.pdf --lang eng+spa
+uv run pliage ocr extract ./pdfs
+uv run pliage ocr run ./document.pdf --force
 ```
 
 Add `--json` to a command when a script needs stable machine-readable output
 instead of human progress text:
 
 ```bash
-uv run docflow pdf reverse input.pdf --json
-uv run docflow ocr run ./pdfs --output-dir ./ocr-pdfs --json
+uv run pliage pdf reverse input.pdf --json
+uv run pliage ocr run ./pdfs --output-dir ./ocr-pdfs --json
 ```
 
 ## Legacy Aliases
@@ -88,14 +90,14 @@ uv run jpg2pdf ./scans --output ./pdfs
 uv run batch-ocr ./pdfs --extract
 ```
 
-New scripts should prefer `docflow`.
+New scripts should prefer `pliage`.
 
 ## OCR Runtime
 
 OCR uses PyMuPDF for PDF inspection/manipulation and shells out to the
 `tesseract` executable to create page-level OCR output. In normal Python
 installs, `tesseract` must be installed separately and available on `PATH`.
-If OCR is needed and Tesseract cannot be found, `docflow` fails before page
+If OCR is needed and Tesseract cannot be found, `pliage` fails before page
 processing starts and prints installation guidance.
 
 When running from a frozen standalone binary, the runtime first looks for a

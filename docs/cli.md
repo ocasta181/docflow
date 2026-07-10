@@ -1,11 +1,11 @@
 # CLI Reference
 
-Generated from the current `docflow` command help.
+Generated from the current `pliage` command help.
 
-## `docflow`
+## `pliage`
 
 ```text
-usage: docflow [-h] [--version] {image,ocr,pdf} ...
+usage: pliage [-h] [--version] {image,ocr,pdf} ...
 
 Document workflow utilities
 
@@ -20,10 +20,10 @@ options:
   --version        Show the installed version and exit
 ```
 
-## `docflow pdf`
+## `pliage pdf`
 
 ```text
-usage: docflow pdf [-h] {reverse,join,split} ...
+usage: pliage pdf [-h] {reverse,join,split} ...
 
 positional arguments:
   {reverse,join,split}
@@ -35,25 +35,24 @@ options:
   -h, --help            show this help message and exit
 ```
 
-## `docflow pdf reverse`
+## `pliage pdf reverse`
 
 ```text
-usage: docflow pdf reverse [-h] [--output OUTPUT] [--json] input
+usage: pliage pdf reverse [-h] [--output OUTPUT] [--json] input
 
 positional arguments:
-  input                 Input PDF file
+  input                Input PDF file
 
 options:
-  -h, --help            show this help message and exit
-  --output OUTPUT, -o OUTPUT
-                        Output PDF file (default: INPUTNAME_reversed.pdf)
-  --json                Emit machine-readable JSON output
+  -h, --help           show this help message and exit
+  --output, -o OUTPUT  Output PDF file (default: INPUTNAME_reversed.pdf)
+  --json               Emit machine-readable JSON output
 ```
 
-## `docflow pdf join`
+## `pliage pdf join`
 
 ```text
-usage: docflow pdf join [-h] [--json] output inputs [inputs ...]
+usage: pliage pdf join [-h] [--json] output inputs [inputs ...]
 
 positional arguments:
   output      Output PDF file
@@ -64,57 +63,77 @@ options:
   --json      Emit machine-readable JSON output
 ```
 
-## `docflow pdf split`
+## `pliage pdf split`
 
 ```text
-usage: docflow pdf split [-h] [--parts PARTS] [--json] input
+usage: pliage pdf split [-h] [--parts PARTS] [--json] input
 
 positional arguments:
-  input                 Input PDF file
+  input              Input PDF file
 
 options:
-  -h, --help            show this help message and exit
-  --parts PARTS, -n PARTS
-                        Number of parts to split into (default: 2)
-  --json                Emit machine-readable JSON output
+  -h, --help         show this help message and exit
+  --parts, -n PARTS  Number of parts to split into (default: 2)
+  --json             Emit machine-readable JSON output
 ```
 
-## `docflow image`
+## `pliage image`
 
 ```text
-usage: docflow image [-h] {to-pdf} ...
+usage: pliage image [-h] {to-pdf,to-bw} ...
 
 positional arguments:
-  {to-pdf}
-    to-pdf    Combine sequentially-numbered JPEG files into PDFs
+  {to-pdf,to-bw}
+    to-pdf        Combine sequentially-numbered JPEG or PNG files into PDFs
+    to-bw         Convert images to black-and-white (grayscale) PNGs
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help      show this help message and exit
 ```
 
-## `docflow image to-pdf`
+## `pliage image to-pdf`
 
 ```text
-usage: docflow image to-pdf [-h] [--prefix PREFIX] [--output OUTPUT] [--json]
-                            [directory]
+usage: pliage image to-pdf [-h] [--prefix PREFIX] [--output OUTPUT] [--json]
+                           [directory]
 
 positional arguments:
-  directory             Directory to scan (default: current directory)
+  directory            Directory to scan (default: current directory)
 
 options:
-  -h, --help            show this help message and exit
-  --prefix PREFIX, -p PREFIX
-                        Only process files matching this prefix (case-
-                        insensitive)
-  --output OUTPUT, -o OUTPUT
-                        Output directory (default: ./pdfs/)
-  --json                Emit machine-readable JSON output
+  -h, --help           show this help message and exit
+  --prefix, -p PREFIX  Only process files matching this prefix (case-
+                       insensitive)
+  --output, -o OUTPUT  Output directory (default: ./pdfs/)
+  --json               Emit machine-readable JSON output
 ```
 
-## `docflow ocr`
+## `pliage image to-bw`
 
 ```text
-usage: docflow ocr [-h] {run,extract} ...
+usage: pliage image to-bw [-h] [--output OUTPUT] [--dpi DPI] [--detect-size]
+                          [--grid [SIZE]] [--json]
+                          [directory]
+
+positional arguments:
+  directory            Directory containing images (default: current
+                       directory)
+
+options:
+  -h, --help           show this help message and exit
+  --output, -o OUTPUT  Output directory (default: overwrite in place as PNG)
+  --dpi DPI            Target output resolution in DPI/PPI (e.g. 150)
+  --detect-size        Measure true resolution from a reference grid instead
+                       of assuming page size
+  --grid [SIZE]        Grid-square size for --detect-size (e.g. 1cm, 5mm,
+                       0.5in; default 1cm)
+  --json               Emit machine-readable JSON output
+```
+
+## `pliage ocr`
+
+```text
+usage: pliage ocr [-h] {run,extract} ...
 
 positional arguments:
   {run,extract}
@@ -125,13 +144,13 @@ options:
   -h, --help     show this help message and exit
 ```
 
-## `docflow ocr run`
+## `pliage ocr run`
 
 ```text
-usage: docflow ocr run [-h] [--no-recursive] [--dry-run] [--quiet]
-                       [--lang LANG] [--json] [--force] [--output OUTPUT]
-                       [--output-dir OUTPUT_DIR]
-                       path
+usage: pliage ocr run [-h] [--no-recursive] [--dry-run] [--quiet]
+                      [--lang LANG] [--json] [--force] [--output OUTPUT]
+                      [--output-dir OUTPUT_DIR]
+                      path
 
 positional arguments:
   path                  Directory to process (or single PDF file)
@@ -145,19 +164,18 @@ options:
                         (default: eng)
   --json                Emit machine-readable JSON output
   --force, -f           Run OCR even on files that already have text
-  --output OUTPUT, -o OUTPUT
-                        Output PDF file for a single input PDF
+  --output, -o OUTPUT   Output PDF file for a single input PDF
   --output-dir OUTPUT_DIR
                         Output directory for OCR PDFs when processing a
                         directory
 ```
 
-## `docflow ocr extract`
+## `pliage ocr extract`
 
 ```text
-usage: docflow ocr extract [-h] [--no-recursive] [--dry-run] [--quiet]
-                           [--lang LANG] [--json]
-                           path
+usage: pliage ocr extract [-h] [--no-recursive] [--dry-run] [--quiet]
+                          [--lang LANG] [--json]
+                          path
 
 positional arguments:
   path                Directory to process (or single PDF file)

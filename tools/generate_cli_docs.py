@@ -4,20 +4,21 @@ from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 from pathlib import Path
 
-from docflow_cli.cli.app import main
+from pliage.cli.app import main
 
 
 COMMANDS = [
-    ("docflow", []),
-    ("docflow pdf", ["pdf"]),
-    ("docflow pdf reverse", ["pdf", "reverse"]),
-    ("docflow pdf join", ["pdf", "join"]),
-    ("docflow pdf split", ["pdf", "split"]),
-    ("docflow image", ["image"]),
-    ("docflow image to-pdf", ["image", "to-pdf"]),
-    ("docflow ocr", ["ocr"]),
-    ("docflow ocr run", ["ocr", "run"]),
-    ("docflow ocr extract", ["ocr", "extract"]),
+    ("pliage", []),
+    ("pliage pdf", ["pdf"]),
+    ("pliage pdf reverse", ["pdf", "reverse"]),
+    ("pliage pdf join", ["pdf", "join"]),
+    ("pliage pdf split", ["pdf", "split"]),
+    ("pliage image", ["image"]),
+    ("pliage image to-pdf", ["image", "to-pdf"]),
+    ("pliage image to-bw", ["image", "to-bw"]),
+    ("pliage ocr", ["ocr"]),
+    ("pliage ocr run", ["ocr", "run"]),
+    ("pliage ocr extract", ["ocr", "extract"]),
 ]
 
 
@@ -34,7 +35,7 @@ def main_cli() -> int:
     sections = [
         "# CLI Reference",
         "",
-        "Generated from the current `docflow` command help.",
+        "Generated from the current `pliage` command help.",
         "",
     ]
 

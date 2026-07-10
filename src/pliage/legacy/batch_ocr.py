@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from docflow_cli.cli.app import main as docflow_main
+from pliage.cli.app import main as pliage_main
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -15,7 +15,7 @@ def main(argv: list[str] | None = None) -> int:
     command = "extract" if _remove_extract_flag(args) else "run"
     if command == "extract":
         _remove_force_flag(args)
-    return docflow_main(["ocr", command, *args])
+    return pliage_main(["ocr", command, *args])
 
 
 def _create_parser() -> argparse.ArgumentParser:

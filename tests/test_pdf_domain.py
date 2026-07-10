@@ -3,8 +3,8 @@ from pathlib import Path
 import pytest
 from pypdf import PdfReader, PdfWriter
 
-from docflow_cli.domains.pdf.service import join_pdfs, page_count, reverse_pdf, split_pdf
-from docflow_cli.shared import PathValidationError
+from pliage.domains.pdf.service import join_pdfs, page_count, reverse_pdf, split_pdf
+from pliage.shared import PathValidationError
 
 
 def create_test_pdf(path: Path, widths: list[int]) -> Path:

@@ -126,7 +126,7 @@ wheels = [
 ]
 
 [[package]]
-name = "docflow-cli"
+name = "pliage"
 version = "0.1.1"
 source = { editable = "." }
 

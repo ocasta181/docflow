@@ -9,13 +9,13 @@ from typing import Any, cast
 
 import fitz
 
-from docflow_cli.domains.ocr.models import ExtractResult, OcrResult
-from docflow_cli.domains.ocr.tesseract import (
+from pliage.domains.ocr.models import ExtractResult, OcrResult
+from pliage.domains.ocr.tesseract import (
     get_tesseract_cmd,
     get_tesseract_env,
     tesseract_unavailable_message,
 )
-from docflow_cli.shared import (
+from pliage.shared import (
     ensure_directory,
     ensure_output_not_inputs,
     find_files,

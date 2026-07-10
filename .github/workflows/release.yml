@@ -25,7 +25,7 @@ jobs:
           python-version: "3.11"
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v8
+        uses: astral-sh/setup-uv@v8.3.2
 
       - name: Verify
         run: |
@@ -43,11 +43,11 @@ jobs:
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
 
-          wheel="$(ls dist/docflow_cli-*.whl)"
+          wheel="$(ls dist/pliage-*.whl)"
           uv venv "$tmp/venv"
           uv pip install --python "$tmp/venv/bin/python" "$wheel[all]"
-          "$tmp/venv/bin/docflow" --version
-          "$tmp/venv/bin/docflow" --help >/dev/null
+          "$tmp/venv/bin/pliage" --version
+          "$tmp/venv/bin/pliage" --help >/dev/null
           "$tmp/venv/bin/pdftools" --help >/dev/null
           "$tmp/venv/bin/jpg2pdf" --help >/dev/null
           "$tmp/venv/bin/batch-ocr" --help >/dev/null
