@@ -5,13 +5,27 @@ from PIL import Image, ImageDraw
 from pypdf import PdfReader
 
 from pliage.domains.image_pdf.service import (
+    convert_to_grayscale,
     create_pdf,
     create_pdfs_from_directory,
+    detect_grid_pitch,
     page_height_in_pixels,
     parse_filename,
+    parse_grid_size_cm,
     scan_directory,
     split_at_whitespace,
 )
+
+
+def create_grid_image(path: Path, pitch: int, size: tuple[int, int] = (900, 700)) -> None:
+    """Write a PNG of graph paper with square cells *pitch* pixels across."""
+    image = Image.new("L", size, 245)
+    draw = ImageDraw.Draw(image)
+    for x in range(0, size[0], pitch):
+        draw.line([(x, 0), (x, size[1])], fill=60, width=2)
+    for y in range(0, size[1], pitch):
+        draw.line([(0, y), (size[0], y)], fill=60, width=2)
+    image.save(path, "PNG")
 
 
 def create_test_jpeg(path: Path, color: tuple[int, int, int] = (255, 0, 0)) -> None:
@@ -200,3 +214,48 @@ def test_create_pdf_does_not_flatten_unexpected_errors(tmp_path: Path, monkeypat
 
     with pytest.raises(AssertionError, match="unexpected bug"):
         create_pdf([(1, image_path)], tmp_path / "doc.pdf")
+
+
+def test_parse_grid_size_cm_units() -> None:
+    assert parse_grid_size_cm("1cm") == pytest.approx(1.0)
+    assert parse_grid_size_cm("5mm") == pytest.approx(0.5)
+    assert parse_grid_size_cm("0.5in") == pytest.approx(1.27)
+    with pytest.raises(ValueError):
+        parse_grid_size_cm("banana")
+
+
+def test_detect_grid_pitch_recovers_known_pitch(tmp_path: Path) -> None:
+    grid_path = tmp_path / "grid.png"
+    create_grid_image(grid_path, pitch=40)
+    pitch = detect_grid_pitch(Image.open(grid_path))
+    assert pitch is not None
+    assert pitch == pytest.approx(40, abs=2)
+
+
+def test_detect_grid_pitch_returns_none_without_grid(tmp_path: Path) -> None:
+    blank = tmp_path / "blank.png"
+    Image.new("L", (900, 700), 245).save(blank, "PNG")
+    assert detect_grid_pitch(Image.open(blank)) is None
+
+
+def test_convert_to_grayscale_detect_size_downscales(tmp_path: Path) -> None:
+    # 40 px per 1 cm square => ~102 PPI; target 51 PPI should halve the image.
+    create_grid_image(tmp_path / "note_1.png", pitch=40, size=(800, 600))
+    converted, _ = convert_to_grayscale(
+        tmp_path, dpi=51, detect_size=True, grid_size_cm=1.0
+    )
+    assert len(converted) == 1
+    with Image.open(converted[0]) as out:
+        assert out.width == pytest.approx(400, abs=15)
+        assert out.height == pytest.approx(300, abs=15)
+
+
+def test_convert_to_grayscale_detect_size_skips_undetected(tmp_path: Path) -> None:
+    Image.new("L", (800, 600), 245).save(tmp_path / "blank_1.png", "PNG")
+    converted, warnings = convert_to_grayscale(
+        tmp_path, dpi=51, detect_size=True, grid_size_cm=1.0
+    )
+    assert len(converted) == 1
+    with Image.open(converted[0]) as out:
+        assert out.size == (800, 600)  # left unchanged
+    assert any("no grid detected" in w for w in warnings)
